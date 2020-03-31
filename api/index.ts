@@ -48,10 +48,10 @@ export default async (req: NowRequest, res: NowResponse) => {
 
 	const now = Date.now();
 	const expires = latestReading.date.valueOf() + READING_INTERVAL + ms('10s');
-	const seconds = (expires - Date.now()) / ms('1s');
+	const seconds = Math.round((expires - Date.now()) / ms('1s'));
 	res.setHeader(
 		'Cache-Control',
-		`s-maxage=${Math.round(seconds)}, stale-while-revalidate`
+		`s-maxage=${seconds}, immutable, must-revalidate, stale-while-revalidate`
 	);
 
 	res.send({
