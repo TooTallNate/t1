@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index" }
+  ],
+  "env": {
+    "DEXCOM_USERNAME": "@dexcom-share-username",
+    "DEXCOM_PASSWORD": "@dexcom-share-password"
+  }
+}
