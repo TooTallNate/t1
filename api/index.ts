@@ -46,9 +46,16 @@ export default async (req: NowRequest, res: NowResponse) => {
 		delta: o1.Value - o2.Value
 	};
 
-	const now = Date.now();
 	const expires = latestReading.date.valueOf() + READING_INTERVAL + ms('10s');
-	const seconds = Math.round((expires - Date.now()) / ms('1s'));
+	let seconds = Math.round((expires - Date.now()) / ms('1s'));
+	if (seconds <= 0) {
+		// If the expected next reading is in the past, then set a default 10
+		// seconds CDN expiration time. It's possible that the sensor is out
+		// of range or warming up, in which case we shouldn't slam the Dexcom
+		// server too aggressively.
+		seconds = 10;
+	}
+
 	res.setHeader('Expires', new Date(expires).toUTCString());
 	res.setHeader(
 		'Cache-Control',
