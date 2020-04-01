@@ -49,6 +49,7 @@ export default async (req: NowRequest, res: NowResponse) => {
 	const now = Date.now();
 	const expires = latestReading.date.valueOf() + READING_INTERVAL + ms('10s');
 	const seconds = Math.round((expires - Date.now()) / ms('1s'));
+	res.setHeader('Expires', new Date(expires).toUTCString());
 	res.setHeader(
 		'Cache-Control',
 		`s-maxage=${seconds}, immutable, must-revalidate, stale-while-revalidate`
