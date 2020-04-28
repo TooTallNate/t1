@@ -2,15 +2,34 @@
   "name": "t1-api",
   "version": "1.0.0",
   "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TooTallNate/t1-api.git"
+  },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Nathan Rajlich <n@n8.io> (https://n8.io)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TooTallNate/t1-api/issues"
+  },
+  "homepage": "https://github.com/TooTallNate/t1-api#readme",
   "dependencies": {
-    "dexcom-share": "3.1.1",
-    "ms": "2.1.2"
+    "next": "^9.3.4",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "recharts": "^1.8.5",
+    "swr": "^0.2.0"
   },
   "devDependencies": {
-    "@now/node": "1.5.0",
-    "@types/ms": "0.7.31"
+    "@types/node": "^13.11.0",
+    "@types/react": "^16.9.32",
+    "@types/recharts": "^1.8.9",
+    "typescript": "^3.8.3"
   }
 }
