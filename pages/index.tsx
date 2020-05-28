@@ -69,7 +69,6 @@ export default function Index() {
 					data={readings}
 					margin={{ top: 5, right: 0, left: 30, bottom: 5 }}
 				>
-					<CartesianGrid strokeDasharray="3 9" />
 					<XAxis dataKey="date" tickFormatter={tickFormatter} />
 					<YAxis orientation="right" type="number" scale="log" domain={[30, 400]} />
 					<Tooltip content={<CustomTooltip />} />
