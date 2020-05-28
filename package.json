@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/TooTallNate/t1#readme",
   "dependencies": {
+    "d3-time-format": "^2.2.3",
     "isomorphic-fetch": "^2.2.1",
     "next": "^9.3.4",
     "react": "^16.13.1",
@@ -28,6 +29,7 @@
     "swr": "^0.2.0"
   },
   "devDependencies": {
+    "@types/d3-time-format": "^2.1.1",
     "@types/isomorphic-fetch": "^0.0.35",
     "@types/node": "^13.11.0",
     "@types/react": "^16.9.32",
