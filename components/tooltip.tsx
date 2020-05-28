@@ -1,13 +1,25 @@
+import { TooltipProps } from 'recharts';
+
 import { arrow } from '../lib/trend';
+import { Reading } from '../lib/types';
 import { formatDate, formatTime } from '../lib/format';
 
-export default function ReadingTooltip({ active, payload, label, units }: any) {
-	if (active) {
-		const reading = payload[0].payload;
+export interface ReadingTooltipProps extends TooltipProps {
+	units?: string;
+}
+
+export default function ReadingTooltip({
+	active,
+	payload,
+	units,
+}: ReadingTooltipProps) {
+	if (active && payload) {
+		const reading: Reading = payload[0].payload;
+		const date = new Date(reading.date);
 		return (
 			<div className="tooltip">
-				<p className="date">Date: {formatDate(label)}</p>
-				<p className="time">Time: {formatTime(label)}</p>
+				<p className="date">Date: {formatDate(date)}</p>
+				<p className="time">Time: {formatTime(date)}</p>
 				<p className="value">
 					{units}:{' '}
 					<span className="value">
