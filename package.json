@@ -34,6 +34,7 @@
     "@types/node": "^13.11.0",
     "@types/react": "^16.9.32",
     "@types/recharts": "^1.8.9",
+    "dexcom-share": "3.1.1",
     "typescript": "^3.8.3"
   }
 }

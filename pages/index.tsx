@@ -3,7 +3,6 @@ import {
 	CartesianGrid,
 	ReferenceLine,
 	ResponsiveContainer,
-	TooltipFormatter,
 	TickFormatterFunction,
 	XAxis,
 	YAxis,
@@ -13,42 +12,50 @@ import {
 } from 'recharts';
 import useSWR from 'swr';
 import fetch from 'isomorphic-fetch';
+import Head from 'next/head';
 import { timeFormat } from 'd3-time-format';
 
-const formatHoursMinutes = timeFormat('%H:%M');
-const formatDate = timeFormat('%-m/%-d/%Y');
-const formatTime = timeFormat('%H:%M:%S');
+import { arrow } from '../lib/trend';
+import { formatHoursMinutes, formatDate, formatTime, formatPlus } from '../lib/format';
 
 export default function Index() {
-	//const maxCount = 100;
 	const maxCount = 36;
-	const { data, error } = useSWR(`/api/readings?maxCount=${maxCount}`, async (endpoint: string) => {
-		const res = await fetch(endpoint);
-		const body = await res.json();
-		return body;
-	});
+	const { data, error } = useSWR(
+		`/api/readings?maxCount=${maxCount}`,
+		async (endpoint: string) => {
+			const res = await fetch(endpoint);
+			const body = await res.json();
+			return body;
+		}
+	);
 
+	let title = null;
 	let mainChart = null;
 	if (data) {
-		for (const r of data.readings) {
+		const { units, readings, latestReading } = data;
+		for (const r of readings) {
 			r.date = new Date(r.date).getTime();
 		}
 
-		const tooltipFormatter: TooltipFormatter = (value, name, entry, index) => {
-			return [ value, data.units ];
-		};
+		const titleTrend = `${latestReading.value} ${formatPlus(latestReading.delta)} ${arrow(latestReading.trend)}`;
+		title = <title>{titleTrend}</title>;
 
-		const tickFormatter: TickFormatterFunction = (value) => {
+		const tickFormatter: TickFormatterFunction = value => {
 			return formatHoursMinutes(value);
 		};
 
 		const CustomTooltip = ({ active, payload, label }: any) => {
 			if (active) {
+				const reading = payload[0].payload;
 				return (
 					<div className="custom-tooltip">
 						<p className="date">Date: {formatDate(label)}</p>
 						<p className="time">Time: {formatTime(label)}</p>
-						<p className="value">{data.units}: <span className="value">{payload[0].value}</span></p>
+						<p className="trend">Trend: {arrow(reading.trend)}</p>
+						<p className="value">
+							{data.units}:{' '}
+							<span className="value">{reading.value}</span>
+						</p>
 					</div>
 				);
 			}
@@ -56,36 +63,48 @@ export default function Index() {
 			return null;
 		};
 
-		mainChart=
+		mainChart = (
 			<ResponsiveContainer height="50%" width="100%">
 				<LineChart
-					data={data.readings}
+					data={readings}
 					margin={{ top: 5, right: 0, left: 30, bottom: 5 }}
 				>
 					<CartesianGrid strokeDasharray="3 9" />
 					<XAxis dataKey="date" tickFormatter={tickFormatter} />
 					<YAxis orientation="right" />
-					<Tooltip content={<CustomTooltip />}/>
+					<Tooltip content={<CustomTooltip />} />
 					<ReferenceLine y={55} stroke="red" strokeDasharray="1 4" />
 					<ReferenceLine y={80} stroke="red" strokeDasharray="3 9" />
 					<ReferenceLine y={180} stroke="red" strokeDasharray="3 9" />
-					<ReferenceLine y={230} stroke="red" strokeDasharray="2 5" />
+					<ReferenceLine y={240} stroke="red" strokeDasharray="1 4" />
 					<Line type="monotone" dataKey="value" stroke="#8884d8" />
 				</LineChart>
 			</ResponsiveContainer>
+		);
 	}
 
 	return (
 		<>
+			<Head>
+				{title}
+				<meta
+					name="viewport"
+					content="initial-scale=1.0, width=device-width"
+				/>
+			</Head>
 			{mainChart}
 			<style jsx global>{`
-			  html, body, #__next {
-				margin: 0px;
-				padding: 0px;
-				width: 100%;
-				height: 100%;
-				font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-			  }
+				html,
+				body,
+				#__next {
+					margin: 0px;
+					padding: 0px;
+					width: 100%;
+					height: 100%;
+					font-family: 'Inter', -apple-system, BlinkMacSystemFont,
+						'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+						'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+				}
 			`}</style>
 		</>
 	);
