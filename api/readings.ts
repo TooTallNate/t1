@@ -41,8 +41,7 @@ function toShell(value: any, prefix = 't1'): string {
 	} else {
 		// Assume "object"
 		for (const [key, val] of Object.entries(value)) {
-			const name = `${prefix}_${snakeCase(key)}`
-			str += toShell(val, name);
+			str += toShell(val, `${prefix}_${snakeCase(key)}`);
 		}
 	}
 	return str;
