@@ -1,8 +1,10 @@
 import ms from 'ms';
+import { isDate } from 'util';
 import createDexcomIterator, {
 	Reading as DexcomReading,
 	Trend
 } from 'dexcom-share';
+import { snakeCase } from 'snake-case';
 import { NowRequest, NowResponse } from '@now/node';
 
 const READING_INTERVAL = ms('5m');
@@ -23,6 +25,27 @@ function toReading(r: DexcomReading): Reading {
 		trend: r.Trend,
 		value: r.Value
 	};
+}
+
+function toShell(value: any, prefix = 't1'): string {
+	let str = '';
+	if (typeof value === 'string' || typeof value === 'number') {
+		str += `${prefix}=${JSON.stringify(value)}\n`;
+	} else if (isDate(value)) {
+		str += `${prefix}=${value.valueOf()}\n`;
+	} else if (Array.isArray(value)) {
+		str += `${prefix}_count=${value.length}\n`;
+		for (let i = 0; i < value.length; i++) {
+			str += toShell(value[i], `${prefix}_${i}`);
+		}
+	} else {
+		// Assume "object"
+		for (const [key, val] of Object.entries(value)) {
+			const name = `${prefix}_${snakeCase(key)}`
+			str += toShell(val, name);
+		}
+	}
+	return str;
 }
 
 export default async (req: NowRequest, res: NowResponse) => {
@@ -62,9 +85,21 @@ export default async (req: NowRequest, res: NowResponse) => {
 		`s-maxage=${seconds}, immutable, must-revalidate, stale-while-revalidate`
 	);
 
-	res.send({
+	const data = {
 		units: 'mg/dL',
 		readings,
 		latestReading
-	});
+	};
+	const format = typeof req.query.format === 'string' ? req.query.format : 'json';
+	if (format === 'json') {
+		res.send(data);
+	} else if (format === 'shell') {
+		res.setHeader('Content-Type', 'text/plain; charset=utf8');
+		res.end(toShell(data));
+	} else {
+		res.statusCode = 400;
+		res.send({
+			error: `Invalid "format": ${format}`
+		});
+	}
 };
