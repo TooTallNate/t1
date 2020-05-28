@@ -71,7 +71,7 @@ export default function Index() {
 				>
 					<CartesianGrid strokeDasharray="3 9" />
 					<XAxis dataKey="date" tickFormatter={tickFormatter} />
-					<YAxis orientation="right" />
+					<YAxis orientation="right" type="number" scale="log" domain={[30, 400]} />
 					<Tooltip content={<CustomTooltip />} />
 					<ReferenceLine y={55} stroke="red" strokeDasharray="1 4" />
 					<ReferenceLine y={80} stroke="red" strokeDasharray="3 9" />
