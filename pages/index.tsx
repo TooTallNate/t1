@@ -1,6 +1,7 @@
 import {
 	LineChart,
 	CartesianGrid,
+	ReferenceLine,
 	ResponsiveContainer,
 	TooltipFormatter,
 	TickFormatterFunction,
@@ -14,7 +15,9 @@ import useSWR from 'swr';
 import fetch from 'isomorphic-fetch';
 import { timeFormat } from 'd3-time-format';
 
-const f = timeFormat('%H:%M:%S');
+const formatHoursMinutes = timeFormat('%H:%M');
+const formatDate = timeFormat('%-m/%-d/%Y');
+const formatTime = timeFormat('%H:%M:%S');
 
 export default function Index() {
 	//const maxCount = 100;
@@ -30,21 +33,21 @@ export default function Index() {
 		for (const r of data.readings) {
 			r.date = new Date(r.date).getTime();
 		}
-		console.log(data.readings);
 
 		const tooltipFormatter: TooltipFormatter = (value, name, entry, index) => {
 			return [ value, data.units ];
 		};
 
 		const tickFormatter: TickFormatterFunction = (value) => {
-			return f(value);
+			return formatHoursMinutes(value);
 		};
 
 		const CustomTooltip = ({ active, payload, label }: any) => {
 			if (active) {
 				return (
 					<div className="custom-tooltip">
-						<p className="time">Time: {f(label)}</p>
+						<p className="date">Date: {formatDate(label)}</p>
+						<p className="time">Time: {formatTime(label)}</p>
 						<p className="value">{data.units}: <span className="value">{payload[0].value}</span></p>
 					</div>
 				);
@@ -63,6 +66,10 @@ export default function Index() {
 					<XAxis dataKey="date" tickFormatter={tickFormatter} />
 					<YAxis orientation="right" />
 					<Tooltip content={<CustomTooltip />}/>
+					<ReferenceLine y={55} stroke="red" strokeDasharray="1 4" />
+					<ReferenceLine y={80} stroke="red" strokeDasharray="3 9" />
+					<ReferenceLine y={180} stroke="red" strokeDasharray="3 9" />
+					<ReferenceLine y={230} stroke="red" strokeDasharray="2 5" />
 					<Line type="monotone" dataKey="value" stroke="#8884d8" />
 				</LineChart>
 			</ResponsiveContainer>
