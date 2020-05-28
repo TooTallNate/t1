@@ -23,7 +23,12 @@ export default function ChartMain({
 				data={readings || []}
 				margin={{ top: 5, right: 0, left: 30, bottom: 5 }}
 			>
-				<XAxis dataKey="date" tickFormatter={formatHoursMinutes} />
+				<XAxis
+					dataKey="date"
+					type="number"
+					tickFormatter={formatHoursMinutes}
+					domain={['dataMin', Date.now()]}
+				/>
 				<YAxis
 					orientation="right"
 					type="number"
