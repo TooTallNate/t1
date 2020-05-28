@@ -89,7 +89,8 @@ export default async (req: NowRequest, res: NowResponse) => {
 		readings,
 		latestReading
 	};
-	const format = typeof req.query.format === 'string' ? req.query.format : 'json';
+	const format =
+		typeof req.query.format === 'string' ? req.query.format : 'json';
 	if (format === 'json') {
 		res.send(data);
 	} else if (format === 'shell') {
