@@ -40,7 +40,7 @@ export default function Index() {
 			return f(value);
 		};
 
-		const CustomTooltip = ({ active, payload, label }) => {
+		const CustomTooltip = ({ active, payload, label }: any) => {
 			if (active) {
 				return (
 					<div className="custom-tooltip">
