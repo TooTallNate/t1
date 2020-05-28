@@ -8,6 +8,7 @@ import {
 	Line,
 } from 'recharts';
 
+import { ReadingsPayload } from '../lib/types';
 import { formatHoursMinutes } from '../lib/format';
 
 import ReadingTooltip from '../components/tooltip';

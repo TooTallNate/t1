@@ -16,5 +16,6 @@ async function fetcher(endpoint: string): Promise<ReadingsPayload> {
 export default function useReadings(maxCount: number) {
 	return useSWR(`/api/readings?maxCount=${maxCount}`, fetcher, {
 		refreshInterval: 60 * 1000,
+		refreshWhenHidden: true,
 	});
 }

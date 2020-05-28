@@ -3,6 +3,7 @@ import { Trend } from 'dexcom-share';
 export interface Reading {
 	date: number;
 	value: number;
+	trend: Trend;
 }
 
 export interface LatestReading extends Reading {
