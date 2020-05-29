@@ -32,7 +32,7 @@ function toShell(value: any, prefix = 't1'): string {
 	if (typeof value === 'string' || typeof value === 'number') {
 		str += `${prefix}=${JSON.stringify(value)}\n`;
 	} else if (isDate(value)) {
-		str += `${prefix}=${value.valueOf()}\n`;
+		str += `${prefix}=${Math.round(value.valueOf() / 1000)}\n`;
 	} else if (Array.isArray(value)) {
 		str += `${prefix}_count=${value.length}\n`;
 		for (let i = 0; i < value.length; i++) {
@@ -69,6 +69,7 @@ export default async (req: NowRequest, res: NowResponse) => {
 	};
 
 	const expires = latestReading.date.valueOf() + READING_INTERVAL + ms('10s');
+	const expiresDate = new Date(expires);
 	let seconds = Math.round((expires - Date.now()) / ms('1s'));
 	if (seconds <= 0) {
 		// If the expected next reading is in the past, then set a default 10
@@ -85,6 +86,7 @@ export default async (req: NowRequest, res: NowResponse) => {
 	);
 
 	const data = {
+		expires: expiresDate,
 		units: 'mg/dL',
 		readings,
 		latestReading
