@@ -7,7 +7,7 @@ import { ReadingsPayload } from './types';
 async function fetcher(endpoint: string): Promise<ReadingsPayload> {
 	const res = await fetch(endpoint);
 	const body = await res.json();
-	body.expires = new Date(res.headers.get('expires')).getTime();
+
 	const { readings, latestReading } = body;
 	latestReading.date = new Date(latestReading.date).getTime();
 	for (const r of readings) {
@@ -22,6 +22,9 @@ async function fetcher(endpoint: string): Promise<ReadingsPayload> {
 			projectedLower: latestReading.value - (i * 5),
 		});
 	}
+
+	const expires = res.headers.get('expires');
+	body.expires = typeof expires === 'string' ? new Date(expires).getTime() : 0;
 
 	return body;
 }
