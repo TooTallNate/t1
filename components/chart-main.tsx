@@ -38,7 +38,7 @@ export default function MainChart({
 					dataKey="date"
 					type="number"
 					tickFormatter={formatHoursMinutes}
-					allowDataOverflow={false}
+					allowDataOverflow={true}
 					domain={xDomain}
 				/>
 				<YAxis
