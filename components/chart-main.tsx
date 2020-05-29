@@ -1,9 +1,11 @@
+import ms from 'ms';
 import {
 	LineChart,
 	ReferenceLine,
 	ResponsiveContainer,
 	XAxis,
 	YAxis,
+	AxisDomain,
 	Tooltip,
 	Line,
 } from 'recharts';
@@ -13,10 +15,19 @@ import { formatHoursMinutes } from '../lib/format';
 
 import ReadingTooltip from '../components/tooltip';
 
-export default function ChartMain({
+interface MainChartProps extends Partial<ReadingsPayload> {
+	now: number;
+}
+
+export default function MainChart({
+	now,
 	units,
-	readings,
-}: Partial<ReadingsPayload>) {
+	readings
+}: MainChartProps) {
+	const xDomain: [AxisDomain, AxisDomain] = [
+		() => now - ms('3h'),
+		() => now + ms('15m')
+	];
 	return (
 		<ResponsiveContainer height="50%" width="100%">
 			<LineChart
@@ -27,7 +38,8 @@ export default function ChartMain({
 					dataKey="date"
 					type="number"
 					tickFormatter={formatHoursMinutes}
-					domain={['dataMin', Date.now()]}
+					allowDataOverflow={false}
+					domain={xDomain}
 				/>
 				<YAxis
 					orientation="right"
@@ -40,12 +52,24 @@ export default function ChartMain({
 				<ReferenceLine y={80} stroke="red" strokeDasharray="3 9" />
 				<ReferenceLine y={180} stroke="red" strokeDasharray="3 9" />
 				<ReferenceLine y={240} stroke="red" strokeDasharray="1 4" />
+				<ReferenceLine x={now} stroke="green" />
+				<Line
+					type="monotone"
+					dataKey="projectedUpper"
+					stroke="#cccccc"
+					isAnimationActive={false}
+				/>
+				<Line
+					type="monotone"
+					dataKey="projectedLower"
+					stroke="#cccccc"
+					isAnimationActive={false}
+				/>
 				<Line
 					type="monotone"
 					dataKey="value"
 					stroke="#8884d8"
-					isAnimationActive={true}
-					animationDuration={0.8}
+					isAnimationActive={false}
 				/>
 			</LineChart>
 		</ResponsiveContainer>

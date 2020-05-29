@@ -2,8 +2,14 @@ import { Trend } from 'dexcom-share';
 
 export interface Reading {
 	date: number;
-	value: number;
 	trend: Trend;
+	value: number;
+}
+
+export interface ProjectedReading {
+	date: number;
+	projectedUpper: number;
+	projectedLower: number;
 }
 
 export interface LatestReading extends Reading {
@@ -13,6 +19,6 @@ export interface LatestReading extends Reading {
 export interface ReadingsPayload {
 	expires: number;
 	units: string;
-	readings: Reading[];
+	readings: (Reading | ProjectedReading)[];
 	latestReading: LatestReading;
 }

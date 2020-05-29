@@ -13,29 +13,27 @@ export default function ReadingTooltip({
 	payload,
 	units,
 }: ReadingTooltipProps) {
-	if (active && payload) {
-		const reading: Reading = payload[0].payload;
-		const date = new Date(reading.date);
-		return (
-			<div className="tooltip">
-				<p className="date">Date: {formatDate(date)}</p>
-				<p className="time">Time: {formatTime(date)}</p>
-				<p className="value">
-					{units}:{' '}
-					<span className="value">
-						{reading.value} {arrow(reading.trend)}
-					</span>
-				</p>
-				<style jsx>{`
-					.tooltip {
-						background-color: rgba(255, 255, 255, 0.8);
-						border: solid 1px #bbb;
-						padding: 0.5em;
-					}
-				`}</style>
-			</div>
-		);
-	}
+	if (!active || !payload) return null;
 
-	return null;
+	const reading: Reading = payload[0].payload;
+	const date = new Date(reading.date);
+	return (
+		<div className="tooltip">
+			<p className="date">Date: {formatDate(date)}</p>
+			<p className="time">Time: {formatTime(date)}</p>
+			<p className="value">
+				{units}:{' '}
+				<span className="value">
+					{reading.value} {arrow(reading.trend)}
+				</span>
+			</p>
+			<style jsx>{`
+				.tooltip {
+					background-color: rgba(255, 255, 255, 0.8);
+					border: solid 1px #bbb;
+					padding: 0.5em;
+				}
+			`}</style>
+		</div>
+	);
 }

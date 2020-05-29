@@ -1,20 +1,30 @@
+import ms from 'ms';
 import Head from 'next/head';
+import { useState } from 'react';
 
+import useInterval from '../lib/use-interval';
 import useReadings from '../lib/use-readings';
 import { arrow } from '../lib/trend';
 import { formatTitle } from '../lib/format';
 
+import Clock from '../components/clock';
 import MainChart from '../components/chart-main';
 import LatestReading from '../components/latest-reading';
 
 export default function Index() {
-	const maxCount = 36;
+	const [ maxCount, setMaxCount ] = useState(36);
+	const [ now, setNow ] = useState(Date.now());
 	const { data, error } = useReadings(maxCount);
+	const latestReading = data?.latestReading;
+	console.log(data);
+
+	// Refresh the timeline on the chart every 5 seconds
+	useInterval(() => setNow(Date.now()), ms('1s'));
 
 	return (
 		<>
 			<Head>
-				<title>{formatTitle(data?.latestReading)}</title>
+				<title>{formatTitle(latestReading)}</title>
 				<meta
 					name="viewport"
 					content="initial-scale=1.0, width=device-width"
@@ -22,10 +32,11 @@ export default function Index() {
 			</Head>
 
 			<div className="top">
+				<Clock now={now} latestReading={latestReading} />
 				<LatestReading {...data} />
 			</div>
 
-			<MainChart {...data} />
+			<MainChart {...data} now={now} />
 
 			<style jsx global>{`
 				html,
