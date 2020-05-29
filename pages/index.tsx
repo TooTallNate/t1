@@ -12,7 +12,7 @@ import MainChart from '../components/chart-main';
 import LatestReading from '../components/latest-reading';
 
 export default function Index() {
-	const [ maxCount, setMaxCount ] = useState(36);
+	const [ maxCount, setMaxCount ] = useState(40);
 	const [ now, setNow ] = useState(Date.now());
 	const { data, error } = useReadings(maxCount);
 	const latestReading = data?.latestReading;

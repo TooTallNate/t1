@@ -1,8 +1,11 @@
 import ms from 'ms';
 import useSWR from 'swr';
+import createDebug from 'debug';
 import { useEffect } from 'react';
 import fetch from 'isomorphic-fetch';
 import { ReadingsPayload } from './types';
+
+const debug = createDebug('t1:lib:use-readings');
 
 async function fetcher(endpoint: string): Promise<ReadingsPayload> {
 	const res = await fetch(endpoint);
@@ -15,7 +18,7 @@ async function fetcher(endpoint: string): Promise<ReadingsPayload> {
 	}
 
 	// Add projected readings
-	for (let i = 0; i < 4; i++) {
+	for (let i = 0; i < 10; i++) {
 		body.readings.push({
 			date: latestReading.date + (i * ms('5m')),
 			projectedUpper: latestReading.value + (i * 5),
@@ -26,12 +29,13 @@ async function fetcher(endpoint: string): Promise<ReadingsPayload> {
 	const expires = res.headers.get('expires');
 	body.expires = typeof expires === 'string' ? new Date(expires).getTime() : 0;
 
+	const cache = res.headers.get('x-vercel-cache');
+	body.cache = typeof cache === 'string' ? cache : 'MISS';
+
 	return body;
 }
 
 export default function useReadings(maxCount: number) {
-	console.log('useReadings(%d)', maxCount);
-
 	const result = useSWR<ReadingsPayload>(
 		`/api/readings?maxCount=${maxCount}`,
 		fetcher,
@@ -40,17 +44,18 @@ export default function useReadings(maxCount: number) {
 			refreshWhenHidden: true,
 		}
 	);
+	debug('Expires: %o - Cache: %o', result.data?.expires, result.data?.cache);
 
 	useEffect(() => {
 		if (!result.data) return;
 		const sleepTime = result.data.expires - Date.now();
-		console.log('Sleeping for %dms', sleepTime);
+		debug('Sleeping for %oms', sleepTime);
 		const timer = setTimeout(() => {
-			console.log('Timeout called!');
+			debug('Timeout called!');
 			result.revalidate();
 		}, sleepTime);
 		return () => {
-			console.log('clearTimeout()', timer);
+			debug('clearTimeout(%o)', timer);
 			clearTimeout(timer)
 		};
 	}, [result.data?.expires]);

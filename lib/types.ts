@@ -18,6 +18,7 @@ export interface LatestReading extends Reading {
 
 export interface ReadingsPayload {
 	expires: number;
+	cache: string;
 	units: string;
 	readings: (Reading | ProjectedReading)[];
 	latestReading: LatestReading;
