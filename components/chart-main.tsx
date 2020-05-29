@@ -52,7 +52,6 @@ export default function MainChart({
 				<ReferenceLine y={80} stroke="red" strokeDasharray="3 9" />
 				<ReferenceLine y={180} stroke="red" strokeDasharray="3 9" />
 				<ReferenceLine y={240} stroke="red" strokeDasharray="1 4" />
-				<ReferenceLine x={now} stroke="green" />
 				<Line
 					type="monotone"
 					dataKey="projectedUpper"
@@ -71,6 +70,7 @@ export default function MainChart({
 					stroke="#8884d8"
 					isAnimationActive={false}
 				/>
+				<ReferenceLine x={now} stroke="green" />
 			</LineChart>
 		</ResponsiveContainer>
 	);
