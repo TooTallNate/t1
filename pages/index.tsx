@@ -16,7 +16,6 @@ export default function Index() {
 	const [ now, setNow ] = useState(Date.now());
 	const { data, error } = useReadings(maxCount);
 	const latestReading = data?.latestReading;
-	console.log(data);
 
 	// Refresh the timeline on the chart every 5 seconds
 	useInterval(() => setNow(Date.now()), ms('1s'));

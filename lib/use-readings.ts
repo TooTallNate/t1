@@ -1,12 +1,13 @@
 import ms from 'ms';
 import useSWR from 'swr';
+import { useEffect } from 'react';
 import fetch from 'isomorphic-fetch';
 import { ReadingsPayload } from './types';
 
 async function fetcher(endpoint: string): Promise<ReadingsPayload> {
 	const res = await fetch(endpoint);
 	const body = await res.json();
-	body.expires = res.headers.get('expires');
+	body.expires = new Date(res.headers.get('expires')).getTime();
 	const { readings, latestReading } = body;
 	latestReading.date = new Date(latestReading.date).getTime();
 	for (const r of readings) {
@@ -26,7 +27,9 @@ async function fetcher(endpoint: string): Promise<ReadingsPayload> {
 }
 
 export default function useReadings(maxCount: number) {
-	return useSWR<ReadingsPayload>(
+	console.log('useReadings(%d)', maxCount);
+
+	const result = useSWR<ReadingsPayload>(
 		`/api/readings?maxCount=${maxCount}`,
 		fetcher,
 		{
@@ -34,4 +37,20 @@ export default function useReadings(maxCount: number) {
 			refreshWhenHidden: true,
 		}
 	);
+
+	useEffect(() => {
+		if (!result.data) return;
+		const sleepTime = result.data.expires - Date.now();
+		console.log('Sleeping for %dms', sleepTime);
+		const timer = setTimeout(() => {
+			console.log('Timeout called!');
+			result.revalidate();
+		}, sleepTime);
+		return () => {
+			console.log('clearTimeout()', timer);
+			clearTimeout(timer)
+		};
+	}, [result.data?.expires]);
+
+	return result;
 }
