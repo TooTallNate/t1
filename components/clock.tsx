@@ -18,14 +18,22 @@ export default function Clock({ now, latestReading }: ClockProps) {
 	}
 
 	return (
-		<div>
+		<div className="left">
 			<div className="time">{formatHoursMinutes(new Date(now))}</div>
 			<div className="ago"><span>{ago}</span> {unit} ago</div>
 			<style jsx>{`
-				.tooltip {
-					background-color: rgba(255, 255, 255, 0.8);
-					border: solid 1px #bbb;
-					padding: 0.5em;
+				.left {
+					height: 20%;
+					width: 30%;
+				}
+
+				.time {
+					font-size: 5em;
+					text-align: center;
+				}
+
+				.ago {
+					text-align: center;
 				}
 			`}</style>
 		</div>

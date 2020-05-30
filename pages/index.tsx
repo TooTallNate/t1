@@ -31,8 +31,8 @@ export default function Index() {
 			</Head>
 
 			<div className="top">
-				<Clock now={now} latestReading={latestReading} />
 				<LatestReading {...data} />
+				<Clock now={now} latestReading={latestReading} />
 			</div>
 
 			<MainChart {...data} now={now} />
