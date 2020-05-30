@@ -2,6 +2,7 @@ import ms from 'ms';
 import Head from 'next/head';
 import { useState } from 'react';
 
+import favicon from '../lib/favicon';
 import useInterval from '../lib/use-interval';
 import useReadings from '../lib/use-readings';
 import { arrow } from '../lib/trend';
@@ -24,6 +25,7 @@ export default function Index() {
 		<>
 			<Head>
 				<title>{formatTitle(latestReading)}</title>
+				<link rel="icon" href={favicon()} />
 				<meta
 					name="viewport"
 					content="initial-scale=1.0, width=device-width"
