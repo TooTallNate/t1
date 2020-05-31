@@ -48,29 +48,29 @@ export default function MainChart({
 					domain={[35, 400]}
 				/>
 				<Tooltip content={<ReadingTooltip units={units} />} />
-				<ReferenceLine y={55} stroke="red" strokeDasharray="1 4" />
-				<ReferenceLine y={80} stroke="red" strokeDasharray="3 9" />
-				<ReferenceLine y={180} stroke="red" strokeDasharray="3 9" />
-				<ReferenceLine y={240} stroke="red" strokeDasharray="1 4" />
+				<ReferenceLine y={55} stroke="#666" strokeDasharray="1 5" />
+				<ReferenceLine y={80} stroke="#333" strokeDasharray="4 3" />
+				<ReferenceLine y={180} stroke="#333" strokeDasharray="4 3" />
+				<ReferenceLine y={240} stroke="#666" strokeDasharray="1 5" />
 				<Line
 					type="monotone"
 					dataKey="projectedUpper"
-					stroke="#cccccc"
+					stroke="#ccc"
 					isAnimationActive={false}
 				/>
 				<Line
 					type="monotone"
 					dataKey="projectedLower"
-					stroke="#cccccc"
+					stroke="#ccc"
 					isAnimationActive={false}
 				/>
 				<Line
 					type="monotone"
 					dataKey="value"
-					stroke="#8884d8"
+					stroke="green"
 					isAnimationActive={false}
 				/>
-				<ReferenceLine x={now} stroke="green" />
+				<ReferenceLine x={now} stroke="#333" />
 			</LineChart>
 		</ResponsiveContainer>
 	);
