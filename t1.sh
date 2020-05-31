@@ -10,14 +10,15 @@ t1_daemon() {
 	local api="api/readings?format=shell"
 	local cache_dir="$HOME/Library/Caches/io.n8.t1"
 	local env_file="$cache_dir/latest.env"
+	local tmp_env_file="$cache_dir/latest.tmp"
 	local headers_file="$cache_dir/latest.headers"
 	while sleep "$sleep_time"; do
 		mkdir -p "$cache_dir"
 		curl -sfLS \
 			--netrc-optional \
 			--dump-header "$headers_file" \
-			"$url/$api" > "$env_file"
-		. "$env_file"
+			"$url/$api" > "$tmp_env_file"
+		. "$tmp_env_file"
 		sleep_time="$(expr "$t1_expires" - "$(date_now)")"
 		if [ "$sleep_time" -lt 1 ]; then
 			# Force a minimum sleep time of 1 second if the data is stale
@@ -26,6 +27,7 @@ t1_daemon() {
 		cache="$(grep -i "^x-vercel-cache:" < "$headers_file" | awk -F": " '{print $2}' | tr -d \\r)"
 		echo "t1_expires: $t1_expires, sleep_time seconds: $sleep_time, cache: $cache"
 		echo "$t1_latest_reading_value"
+		mv "$tmp_env_file" "$env_file"
 	done
 }
 
