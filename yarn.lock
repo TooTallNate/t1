@@ -2425,10 +2425,10 @@ des.js@^1.0.0:
     inherits "^2.0.1"
     minimalistic-assert "^1.0.0"
 
-dexcom-share@3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/dexcom-share/-/dexcom-share-3.1.1.tgz#68617e1d7064fe008ca86099d849aa5c1b61e63d"
-  integrity sha512-8IrjKHCoIlHyk5mPMlyec9ooDIaAtQLwkcadlCH1gWohXtp19iD3FigS1UEG/rhEvn1GJc6aGoFeJDvmeUzvbw==
+dexcom-share@3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/dexcom-share/-/dexcom-share-3.2.0.tgz#051ed34fc657c56be6b77638d5f92b6b720206c8"
+  integrity sha512-/l5t3cAMI5Lrv0mXLqqhkm1sLA0nyM3s6g8BTCpR10yNywFivBRQ9ILUgHvDN/QcCPoVlqFWxqLNwVb2ZYFHLQ==
   dependencies:
     async-retry "^1.1.4"
     debug "^3.1.0"
