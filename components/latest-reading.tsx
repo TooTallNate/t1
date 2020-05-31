@@ -14,7 +14,18 @@ export default function LatestReading({ units, latestReading }: any) {
 
 			<style jsx>{`
 				.latest {
+					height: 20%;
+					width: 30%;
 					float: right;
+					text-align: center;
+				}
+
+				.value {
+					font-size: 7em;
+				}
+
+				.delta {
+					font-size: 2em;
 				}
 			`}</style>
 		</div>

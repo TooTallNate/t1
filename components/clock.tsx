@@ -18,22 +18,22 @@ export default function Clock({ now, latestReading }: ClockProps) {
 	}
 
 	return (
-		<div className="left">
+		<div className="clock">
 			<div className="time">{formatHoursMinutes(new Date(now))}</div>
 			<div className="ago"><span>{ago}</span> {unit} ago</div>
 			<style jsx>{`
-				.left {
+				.clock {
 					height: 20%;
-					width: 30%;
+					width: 20%;
+					text-align: center;
 				}
 
 				.time {
-					font-size: 5em;
-					text-align: center;
+					font-size: 6em;
 				}
 
 				.ago {
-					text-align: center;
+					font-size: 1.5em;
 				}
 			`}</style>
 		</div>

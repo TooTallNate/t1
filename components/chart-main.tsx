@@ -26,7 +26,7 @@ export default function MainChart({
 }: MainChartProps) {
 	const xDomain: [AxisDomain, AxisDomain] = [
 		() => now - ms('3h'),
-		() => now + ms('15m')
+		() => now + ms('30m')
 	];
 	return (
 		<ResponsiveContainer height="50%" width="100%">
