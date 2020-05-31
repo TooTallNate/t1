@@ -28,7 +28,7 @@ export default function Index() {
 				<link rel="icon" href={favicon()} />
 				<meta
 					name="viewport"
-					content="initial-scale=1.0, width=device-width"
+					content="initial-scale=1.0, width=device-width, user-scalable=no"
 				/>
 			</Head>
 
