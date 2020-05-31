@@ -25,8 +25,7 @@ t1_daemon() {
 			sleep_time=1
 		fi
 		cache="$(grep -i "^x-vercel-cache:" < "$headers_file" | awk -F": " '{print $2}' | tr -d \\r)"
-		echo "t1_expires: $t1_expires, sleep_time seconds: $sleep_time, cache: $cache"
-		echo "$t1_latest_reading_value"
+		echo -e "value: $t1_latest_reading_value, expires: $t1_expires,\tsleep seconds: $sleep_time,\tcache: $cache"
 		mv "$tmp_env_file" "$env_file"
 	done
 }
@@ -40,13 +39,11 @@ t1_ps1() {
 	eval "$(sed 's/^/local /' < "$env_file")"
 	local bgl="$t1_latest_reading_value"
 	local delta="$t1_latest_reading_delta"
-	#local mins_ago="$(nightscout_minutes_since "${latest_entry_mills}")"
+	#local mins_ago="$(nightscout_minutes_since "$t1_latest_reading_date")"
 
 	if [ "$delta" -ge 0 ]; then
 		delta="+$delta"
 	fi
-
-	trend="→";
 
 	# If the previous reading was more than 6 minutes ago (5 minutes is
 	# normal, plus or minus some time to allow the reading to be uploaded,
@@ -66,24 +63,26 @@ t1_ps1() {
 	#	bgl="$(echo "${bgl}" | string_strikethrough)"
 	#	delta="$(echo "${delta}" | string_strikethrough)"
 	#else
-	#	case "${latest_entry_direction}" in
-	#		DoubleUp) trend="⇈";;
-	#		SingleUp) trend="↑";;
-	#		FortyFiveUp) trend="↗";;
-	#		Flat) trend="→";;
-	#		FortyFiveDown) trend="↘";;
-	#		SingleDown) trend="↓";;
-	#		DoubleDown) trend="⇊";;
-	#		NONE) trend="⇼";;
-	#	esac
+	case "$t1_latest_reading_trend" in
+		0) trend="⇼";; # None
+		1) trend="⇈";; # DoubleUp
+		2) trend="↑";; # SingleUp
+		3) trend="↗";; # FortyFiveUp
+		4) trend="→";; # Flat
+		5) trend="↘";; # FortyFiveDown
+		6) trend="↓";; # SingleDown
+		7) trend="⇊";; # DoubleDown
+		#8)            # NotComputable
+		#9)            # OutOfRange
+	esac
 
-	#	if [ "${latest_entry_mgdl}" -ge "${settings_thresholds_bg_high}" ]; then
+	#	if [ "${t1_latest_reading_value}" -ge "${settings_thresholds_bg_high}" ]; then
 	#		color="${BOLD}${YELLOW}"
-	#	elif [ "${latest_entry_mgdl}" -ge "${settings_thresholds_bg_target_top}" ]; then
+	#	elif [ "${t1_latest_reading_value}" -ge "${settings_thresholds_bg_target_top}" ]; then
 	#		color="${YELLOW}"
-	#	elif [ "${latest_entry_mgdl}" -le "${settings_thresholds_bg_low}" ]; then
+	#	elif [ "${t1_latest_reading_value}" -le "${settings_thresholds_bg_low}" ]; then
 	#		color="${BOLD}${RED}"
-	#	elif [ "${latest_entry_mgdl}" -le "${settings_thresholds_bg_target_bottom}" ]; then
+	#	elif [ "${t1_latest_reading_value}" -le "${settings_thresholds_bg_target_bottom}" ]; then
 	#		color="${RED}"
 	#	fi
 	#fi
@@ -96,5 +95,5 @@ t1_ps1() {
 	fi
 
 	printf "\001%s\002%s %s %s\001%s\002" \
-		"${color}" "${bgl}" "${delta}" "${trend}" "${NO_COLOR}"
+		"$color" "$bgl" "$delta" "$trend" "$NO_COLOR"
 }
