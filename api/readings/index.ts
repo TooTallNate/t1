@@ -7,8 +7,6 @@ import createDexcomIterator, {
 import { snakeCase } from 'snake-case';
 import { NowRequest, NowResponse } from '@now/node';
 
-const READING_INTERVAL = ms('5m');
-
 interface Reading {
 	date: Date;
 	trend: Trend;
@@ -18,6 +16,13 @@ interface Reading {
 interface LatestReading extends Reading {
 	delta: number;
 }
+
+const READING_INTERVAL = ms('5m');
+
+const iterator = createDexcomIterator({
+	username: process.env.DEXCOM_USERNAME,
+	password: process.env.DEXCOM_PASSWORD
+});
 
 function toReading(r: DexcomReading): Reading {
 	return {
@@ -48,10 +53,6 @@ function toShell(value: any, prefix = 't1'): string {
 }
 
 export default async (req: NowRequest, res: NowResponse) => {
-	const iterator = createDexcomIterator({
-		username: process.env.DEXCOM_USERNAME,
-		password: process.env.DEXCOM_PASSWORD
-	});
 	const maxCount =
 		parseInt(
 			Array.isArray(req.query.maxCount)
@@ -59,6 +60,7 @@ export default async (req: NowRequest, res: NowResponse) => {
 				: req.query.maxCount,
 			10
 		) || 2;
+	iterator.reset();
 	const result = await iterator.read({ maxCount });
 	const readings: Reading[] = result.map(toReading);
 	const o1 = result[result.length - 1];
