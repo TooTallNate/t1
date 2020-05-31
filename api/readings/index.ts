@@ -72,7 +72,7 @@ export default async (req: NowRequest, res: NowResponse) => {
 
 	const now = Date.now();
 	const expires = latestReading.date.valueOf() + READING_INTERVAL;
-	const expiresDate = new Date(expires);
+	let expiresDate = new Date(expires);
 	let seconds = Math.round((expires - now) / ms('1s'));
 	if (seconds <= 0) {
 		// If the expected next reading is in the past, then set a default of 3
