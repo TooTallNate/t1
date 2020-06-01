@@ -2,7 +2,7 @@ import ms from 'ms';
 import { isDate } from 'util';
 import createDexcomIterator, {
 	Reading as DexcomReading,
-	Trend
+	Trend,
 } from 'dexcom-share';
 import { snakeCase } from 'snake-case';
 import { NowRequest, NowResponse } from '@now/node';
@@ -15,21 +15,44 @@ interface Reading {
 
 interface LatestReading extends Reading {
 	delta: number;
-	delay: number;
+	delay: DateDiff;
 }
 
 const READING_INTERVAL = ms('5m');
 
 const iterator = createDexcomIterator({
 	username: process.env.DEXCOM_USERNAME,
-	password: process.env.DEXCOM_PASSWORD
+	password: process.env.DEXCOM_PASSWORD,
 });
+
+class DateDiff {
+	from: Date;
+	to: Date;
+
+	constructor(from: Date, to: Date) {
+		this.from = from;
+		this.to = to;
+	}
+
+	get diff() {
+		return this.to.getTime() - this.from.getTime();
+	}
+
+	toJSON() {
+		return this.diff;
+	}
+
+	toShell() {
+		// Return time difference as seconds
+		return this.diff / 1000;
+	}
+}
 
 function toReading(r: DexcomReading): Reading {
 	return {
 		date: new Date(r.Date),
 		trend: r.Trend,
-		value: r.Value
+		value: r.Value,
 	};
 }
 
@@ -44,6 +67,8 @@ function toShell(value: any, prefix = 't1'): string {
 		for (let i = 0; i < value.length; i++) {
 			str += toShell(value[i], `${prefix}_${i}`);
 		}
+	} else if (typeof value.toShell === 'function') {
+		str += `${prefix}=${value.toShell()}\n`;
 	} else {
 		// Assume "object"
 		for (const [key, val] of Object.entries(value)) {
@@ -64,12 +89,12 @@ export default async (req: NowRequest, res: NowResponse) => {
 	iterator.reset();
 	const result = await iterator.read({ maxCount });
 	const readings: Reading[] = result.map(toReading);
-	const o1 = result[result.length - 1];
-	const o2 = result[result.length - 2];
+	const o1 = readings[readings.length - 1];
+	const o2 = readings[readings.length - 2];
 	const latestReading: LatestReading = {
-		...toReading(o1),
-		delta: o1.Value - o2.Value,
-		delay: o1.Date - o2.Date
+		...o1,
+		delta: o1.value - o2.value,
+		delay: new DateDiff(o2.date, o1.date),
 	};
 
 	const now = Date.now();
@@ -95,7 +120,7 @@ export default async (req: NowRequest, res: NowResponse) => {
 		expires: expiresDate,
 		units: 'mg/dL',
 		readings,
-		latestReading
+		latestReading,
 	};
 	const format =
 		typeof req.query.format === 'string' ? req.query.format : 'json';
@@ -107,7 +132,7 @@ export default async (req: NowRequest, res: NowResponse) => {
 	} else {
 		res.statusCode = 400;
 		res.send({
-			error: `Invalid "format": ${format}`
+			error: `Invalid "format": ${format}`,
 		});
 	}
 };
