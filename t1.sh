@@ -39,18 +39,17 @@ t1_ps1() {
 	eval "$(sed 's/^/local /' < "$env_file")"
 	local bgl="$t1_latest_reading_value"
 	local delta="$t1_latest_reading_delta"
-	#local mins_ago="$(nightscout_minutes_since "$t1_latest_reading_date")"
 
 	if [ "$delta" -ge 0 ]; then
 		delta="+$delta"
 	fi
 
-	# If the previous reading was more than 6 minutes ago (5 minutes is
-	# normal, plus or minus some time to allow the reading to be uploaded,
-	# then the delta is considered questionable so append an asterisk
-	#if [ "$((${latest_entry_mills} - ${previous_entry_mills}))" -gt "${SIX_MINUTES_MS}" ]; then
-	#	delta="${delta}*"
-	#fi
+	# Append an asterisk if the previous reading was more than 6 minutes ago
+	# (5 minutes is normal, plus or minus some time to allow the reading to
+	# be uploaded, in which case the delta is considered "stale"
+	if [ "$t1_latest_reading_delay" -ge 360 ]; then
+		delta="$delta*"
+	fi
 
 	#if [ "${settings_alarm_timeago_urgent}" = "true" ] && [ "${mins_ago}" -ge "${settings_alarm_timeago_urgent_mins}" ]; then
 	#	trend='↛'
