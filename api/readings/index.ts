@@ -15,6 +15,7 @@ interface Reading {
 
 interface LatestReading extends Reading {
 	delta: number;
+	delay: number;
 }
 
 const READING_INTERVAL = ms('5m');
@@ -67,7 +68,8 @@ export default async (req: NowRequest, res: NowResponse) => {
 	const o2 = result[result.length - 2];
 	const latestReading: LatestReading = {
 		...toReading(o1),
-		delta: o1.Value - o2.Value
+		delta: o1.Value - o2.Value,
+		delay: o1.Date - o2.Date
 	};
 
 	const now = Date.now();
