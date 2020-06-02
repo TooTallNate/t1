@@ -35,7 +35,7 @@ t1_ps1() {
 	local seconds_ago=
 	local timeago_warn_seconds=
 	local timeago_alarm_seconds=
-	local color="$GREEN"
+	local color="$COLOR_GREEN"
 	local cache_dir="$HOME/Library/Caches/io.n8.t1"
 	local env_file="$cache_dir/latest.env"
 
@@ -68,12 +68,12 @@ t1_ps1() {
 
 	if [ "$seconds_ago" -ge "$timeago_alarm_seconds" ]; then
 		trend='↛'
-		color="${INVERSE}${BOLD}${RED}"
+		color="$COLOR_BOLD$COLOR_RED"
 		bgl="$(printf "%s" "${bgl}" | string_strikethrough)"
 		delta="$(printf "%s" "${delta}" | string_strikethrough)"
 	elif [ "$seconds_ago" -ge "$timeago_warn_seconds" ]; then
 		trend='↛'
-		color="${INVERSE}${BOLD}${YELLOW}"
+		color="$COLOR_BOLD$COLOR_YELLOW"
 		bgl="$(echo "${bgl}" | string_strikethrough)"
 		delta="$(echo "${delta}" | string_strikethrough)"
 	else
@@ -91,23 +91,23 @@ t1_ps1() {
 		esac
 
 		if [ "$t1_latest_reading_value" -ge "$value_high_alarm" ]; then
-			color="$BOLD$YELLOW"
+			color="$COLOR_BOLD$COLOR_YELLOW"
 		elif [ "$t1_latest_reading_value" -ge "$value_high_warn" ]; then
-			color="$YELLOW"
+			color="$COLOR_YELLOW"
 		elif [ "$t1_latest_reading_value" -le "$value_low_alarm" ]; then
-			color="$BOLD$RED"
+			color="$COLOR_BOLD$COLOR_RED"
 		elif [ "$t1_latest_reading_value" -le "$value_low_warn" ]; then
-			color="$RED"
+			color="$COLOR_RED"
 		fi
 	fi
 
 	if [ "$t1_latest_reading_trend" -eq 8 ]; then
-		color="$BOLD$RED"
+		color="$COLOR_BOLD$COLOR_RED"
 		bgl="?"
 		delta="NC"
 		trend="✖︎"
 	fi
 
 	printf "\001%s\002%s %s %s\001%s\002" \
-		"$color" "$bgl" "$delta" "$trend" "$NO_COLOR"
+		"$color" "$bgl" "$delta" "$trend" "$COLOR_RESET"
 }
