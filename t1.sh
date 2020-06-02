@@ -49,6 +49,13 @@ t1_ps1() {
 
 	eval "$(sed 's/^/local /' < "$env_file")"
 	local bgl="$t1_latest_reading_value"
+
+	if [ -z "$bgl" ]; then
+		echo "${COLOR_RED}Error:${COLOR_RESET} Could not load t1 env vars at \"$env_file\"." >&2
+		echo "Please make sure \`t1_daemon\` is running." >&2
+		return
+	fi
+
 	local delta="$t1_latest_reading_delta"
 	seconds_ago="$(expr "$(date_now)" - "$t1_latest_reading_date")"
 
