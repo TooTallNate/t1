@@ -4,6 +4,7 @@ import "string@0.2.0"
 
 # Start the daemon
 t1_daemon() {
+	local r=
 	local cache=
 	local sleep_time=0
 	local url="https://t1-new.n8.io"
@@ -14,19 +15,26 @@ t1_daemon() {
 	local headers_file="$cache_dir/latest.headers"
 	while sleep "$sleep_time"; do
 		mkdir -p "$cache_dir"
+		r=0
 		curl -sfLS \
 			--netrc-optional \
 			--dump-header "$headers_file" \
-			"$url/$api" > "$tmp_env_file"
-		. "$tmp_env_file"
-		sleep_time="$(expr "$t1_expires" - "$(date_now)")"
-		if [ "$sleep_time" -lt 1 ]; then
-			# Force a minimum sleep time of 1 second if the data is stale
-			sleep_time=1
+			"$url/$api" > "$tmp_env_file" || r=$?
+		if [ "$r" -eq 0 ]; then
+			. "$tmp_env_file"
+			sleep_time="$(expr "$t1_expires" - "$(date_now)")"
+			if [ "$sleep_time" -lt 1 ]; then
+				# Force a minimum sleep time of 1 second if the data is stale
+				sleep_time=1
+			fi
+
+			cache="$(grep -i "^x-vercel-cache:" < "$headers_file" | awk -F": " '{print $2}' | tr -d \\r)"
+			echo -e "value: $t1_latest_reading_value, expires: $t1_expires,\tsleep seconds: $sleep_time,\tcache: $cache"
+			mv "$tmp_env_file" "$env_file"
+		else
+			# curl failed
+			sleep_time=5
 		fi
-		cache="$(grep -i "^x-vercel-cache:" < "$headers_file" | awk -F": " '{print $2}' | tr -d \\r)"
-		echo -e "value: $t1_latest_reading_value, expires: $t1_expires,\tsleep seconds: $sleep_time,\tcache: $cache"
-		mv "$tmp_env_file" "$env_file"
 	done
 }
 
