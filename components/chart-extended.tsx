@@ -25,11 +25,15 @@ export default function MainChart({
 	readings
 }: MainChartProps) {
 	const xDomain: [AxisDomain, AxisDomain] = [
-		() => now - ms('3h'),
-		() => now + ms('30m')
+		() => now - ms('1d'),
+		() => now
 	];
+	const dotStyle = {
+		stroke: '#8884d8',
+		r: 1.5
+	};
 	return (
-		<ResponsiveContainer height="50%" width="100%">
+		<ResponsiveContainer height="20%" width="100%" className="container">
 			<LineChart
 				data={readings || []}
 				margin={{ top: 5, right: 0, left: 30, bottom: 5 }}
@@ -38,7 +42,6 @@ export default function MainChart({
 				<XAxis
 					dataKey="date"
 					type="number"
-					tickFormatter={formatHoursMinutes}
 					allowDataOverflow={true}
 					domain={xDomain}
 				/>
@@ -46,13 +49,12 @@ export default function MainChart({
 					orientation="right"
 					type="number"
 					scale="log"
+					hide={true}
 					domain={[35, 400]}
 				/>
 				<Tooltip content={<ReadingTooltip units={units} />} />
-				<ReferenceLine y={55} stroke="#666" strokeDasharray="1 5" />
-				<ReferenceLine y={80} stroke="#333" strokeDasharray="4 3" />
-				<ReferenceLine y={180} stroke="#333" strokeDasharray="4 3" />
-				<ReferenceLine y={240} stroke="#666" strokeDasharray="1 5" />
+				<ReferenceLine y={80} stroke="#666" strokeDasharray="3 3" />
+				<ReferenceLine y={180} stroke="#666" strokeDasharray="3 3" />
 				<Line
 					type="monotone"
 					dataKey="projectedUpper"
@@ -68,7 +70,8 @@ export default function MainChart({
 				<Line
 					type="monotone"
 					dataKey="value"
-					stroke="green"
+					stroke="none"
+					dot={dotStyle}
 					isAnimationActive={false}
 				/>
 				<ReferenceLine x={now} stroke="#333" />

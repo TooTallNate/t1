@@ -10,10 +10,11 @@ import { formatTitle } from '../lib/format';
 
 import Clock from '../components/clock';
 import MainChart from '../components/chart-main';
+import ExtendedChart from '../components/chart-extended';
 import LatestReading from '../components/latest-reading';
 
 export default function Index() {
-	const [ maxCount, setMaxCount ] = useState(40);
+	const [ maxCount, setMaxCount ] = useState(300);
 	const [ now, setNow ] = useState(Date.now());
 	const { data, error } = useReadings(maxCount);
 	const latestReading = data?.latestReading;
@@ -38,6 +39,8 @@ export default function Index() {
 			</div>
 
 			<MainChart {...data} now={now} />
+
+			<ExtendedChart {...data} now={now} />
 
 			<style jsx global>{`
 				html,
