@@ -57,24 +57,11 @@ export default function MainChart({
 				<ReferenceLine y={180} stroke="#666" strokeDasharray="3 3" />
 				<Line
 					type="monotone"
-					dataKey="projectedUpper"
-					stroke="#ccc"
-					isAnimationActive={false}
-				/>
-				<Line
-					type="monotone"
-					dataKey="projectedLower"
-					stroke="#ccc"
-					isAnimationActive={false}
-				/>
-				<Line
-					type="monotone"
 					dataKey="value"
 					stroke="none"
 					dot={dotStyle}
 					isAnimationActive={false}
 				/>
-				<ReferenceLine x={now} stroke="#333" />
 			</LineChart>
 		</ResponsiveContainer>
 	);
