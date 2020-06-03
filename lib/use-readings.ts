@@ -53,7 +53,7 @@ export default function useReadings(maxCount: number) {
 		if (sleepTime < 0) {
 			sleepTime = ms('3s');
 		}
-		debug('Sleeping for %oms', sleepTime);
+		debug('Sleeping for %o', ms(sleepTime));
 		const timer = setTimeout(() => {
 			debug('Timeout called!');
 			result.revalidate();
