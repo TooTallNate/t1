@@ -32,6 +32,8 @@ async function fetcher(endpoint: string): Promise<ReadingsPayload> {
 	const cache = res.headers.get('x-vercel-cache');
 	body.cache = typeof cache === 'string' ? cache : 'MISS';
 
+	debug('Expires: %o - Cache: %o', body.expires, body.cache);
+
 	return body;
 }
 
@@ -44,7 +46,6 @@ export default function useReadings(maxCount: number) {
 			refreshWhenHidden: true,
 		}
 	);
-	debug('Expires: %o - Cache: %o', result.data?.expires, result.data?.cache);
 
 	useEffect(() => {
 		if (!result.data) return;
