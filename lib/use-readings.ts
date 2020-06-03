@@ -49,7 +49,10 @@ export default function useReadings(maxCount: number) {
 
 	useEffect(() => {
 		if (!result.data) return;
-		const sleepTime = result.data.expires - Date.now();
+		let sleepTime = result.data.expires - Date.now();
+		if (sleepTime < 0) {
+			sleepTime = ms('3s');
+		}
 		debug('Sleeping for %oms', sleepTime);
 		const timer = setTimeout(() => {
 			debug('Timeout called!');
@@ -59,7 +62,7 @@ export default function useReadings(maxCount: number) {
 			debug('clearTimeout(%o)', timer);
 			clearTimeout(timer)
 		};
-	}, [result.data?.expires]);
+	}, [result.data?.expires, result.data?.cache]);
 
 	return result;
 }
