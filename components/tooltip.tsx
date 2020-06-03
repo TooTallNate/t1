@@ -13,7 +13,7 @@ export default function ReadingTooltip({
 	payload,
 	units,
 }: ReadingTooltipProps) {
-	if (!active || !payload) return null;
+	if (!active || !Array.isArray(payload) || payload.length === 0) return null;
 
 	const reading: Reading = payload[0].payload;
 	const date = new Date(reading.date);
