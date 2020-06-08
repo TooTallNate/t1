@@ -24,7 +24,7 @@ export default function ReadingTooltip({
 			<p className="value">
 				{units}:{' '}
 				<span className="value">
-					{reading.value} {arrow(reading.trend)}
+					{Math.round(reading.value)} {arrow(reading.trend)}
 				</span>
 			</p>
 			<style jsx>{`
