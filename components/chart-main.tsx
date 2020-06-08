@@ -48,7 +48,7 @@ export default function MainChart({
 					scale="log"
 					domain={[35, 400]}
 				/>
-				<Tooltip content={<ReadingTooltip units={units} />} />
+				<Tooltip isAnimationActive={false} content={<ReadingTooltip units={units} />} />
 				<ReferenceLine y={55} stroke="#666" strokeDasharray="1 5" />
 				<ReferenceLine y={80} stroke="#333" strokeDasharray="4 3" />
 				<ReferenceLine y={180} stroke="#333" strokeDasharray="4 3" />

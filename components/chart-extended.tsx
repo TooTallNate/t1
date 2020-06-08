@@ -52,7 +52,7 @@ export default function ExtendedChart({
 					hide={true}
 					domain={[35, 400]}
 				/>
-				<Tooltip content={<ReadingTooltip units={units} />} />
+				<Tooltip isAnimationActive={false} conten content={<ReadingTooltip units={units} />} />
 				<ReferenceLine y={80} stroke="#666" strokeDasharray="3 3" />
 				<ReferenceLine y={180} stroke="#666" strokeDasharray="3 3" />
 				<Line
