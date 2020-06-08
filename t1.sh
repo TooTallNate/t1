@@ -60,8 +60,8 @@ t1_ps1() {
 	seconds_ago="$(expr "$(date_now)" - "$t1_latest_reading_date")"
 
 	# TODO: make configurable
-	local timeago_warn_mins="15" # 15 minutes
-	local timeago_alarm_mins="30" # 30 minutes
+	local timeago_warn_mins="15"
+	local timeago_alarm_mins="30"
 	local value_high_warn="180"
 	local value_high_alarm="230"
 	local value_low_warn="70"
