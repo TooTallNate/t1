@@ -15,15 +15,15 @@ import { formatHoursMinutes } from '../lib/format';
 
 import ReadingTooltip from '../components/tooltip';
 
-interface MainChartProps extends Partial<ReadingsPayload> {
+interface ExtendedChartProps extends Partial<ReadingsPayload> {
 	now: number;
 }
 
-export default function MainChart({
+export default function ExtendedChart({
 	now,
 	units,
 	readings
-}: MainChartProps) {
+}: ExtendedChartProps) {
 	const xDomain: [AxisDomain, AxisDomain] = [
 		() => now - ms('1d'),
 		() => now
