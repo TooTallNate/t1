@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import createDebug from 'debug';
 import { useEffect } from 'react';
 import fetch from 'isomorphic-fetch';
-import { ReadingsPayload } from './types';
+import { ReadingsPayload } from '@lib/types';
 
 const debug = createDebug('t1:lib:use-readings');
 

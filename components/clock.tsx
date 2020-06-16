@@ -1,6 +1,6 @@
 import ms from 'ms';
-import { formatHoursMinutes } from '../lib/format';
-import { LatestReading } from '../lib/types';
+import { formatHoursMinutes } from '@lib/format';
+import { LatestReading } from '@lib/types';
 
 interface ClockProps {
 	now: number;

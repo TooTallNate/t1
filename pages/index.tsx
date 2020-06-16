@@ -2,16 +2,16 @@ import ms from 'ms';
 import Head from 'next/head';
 import { useState } from 'react';
 
-import favicon from '../lib/favicon';
-import useInterval from '../lib/use-interval';
-import useReadings from '../lib/use-readings';
-import { arrow } from '../lib/trend';
-import { formatTitle } from '../lib/format';
+import favicon from '@lib/favicon';
+import useInterval from '@lib/use-interval';
+import useReadings from '@lib/use-readings';
+import { arrow } from '@lib/trend';
+import { formatTitle } from '@lib/format';
 
-import Clock from '../components/clock';
-import MainChart from '../components/chart-main';
-import ExtendedChart from '../components/chart-extended';
-import LatestReading from '../components/latest-reading';
+import Clock from '@components/clock';
+import MainChart from '@components/chart-main';
+import ExtendedChart from '@components/chart-extended';
+import LatestReading from '@components/latest-reading';
 
 export default function Index() {
 	const [ maxCount, setMaxCount ] = useState(300);

@@ -1,8 +1,8 @@
 import { TooltipProps } from 'recharts';
 
-import { arrow } from '../lib/trend';
-import { Reading } from '../lib/types';
-import { formatDate, formatTime } from '../lib/format';
+import { arrow } from '@lib/trend';
+import { Reading } from '@lib/types';
+import { formatDate, formatTime } from '@lib/format';
 
 export interface ReadingTooltipProps extends TooltipProps {
 	units?: string;

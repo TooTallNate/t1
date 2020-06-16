@@ -1,7 +1,7 @@
 import { timeFormat } from 'd3-time-format';
 
-import { arrow } from './trend';
-import { LatestReading } from './types';
+import { arrow } from '@lib/trend';
+import { LatestReading } from '@lib/types';
 
 export const formatHoursMinutes = timeFormat('%H:%M');
 export const formatDate = timeFormat('%-m/%-d/%Y');

@@ -10,10 +10,10 @@ import {
 	Line,
 } from 'recharts';
 
-import { ReadingsPayload } from '../lib/types';
-import { formatHoursMinutes } from '../lib/format';
+import { ReadingsPayload } from '@lib/types';
+import { formatHoursMinutes } from '@lib/format';
 
-import ReadingTooltip from '../components/tooltip';
+import ReadingTooltip from '@components/tooltip';
 
 interface ExtendedChartProps extends Partial<ReadingsPayload> {
 	now: number;

@@ -1,5 +1,5 @@
-import { arrow } from '../lib/trend';
-import { formatPlus } from '../lib/format';
+import { arrow } from '@lib/trend';
+import { formatPlus } from '@lib/format';
 
 export default function LatestReading({ units, latestReading }: any) {
 	if (!latestReading) return null;
