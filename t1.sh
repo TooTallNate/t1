@@ -7,7 +7,7 @@ t1_daemon() {
 	local r=
 	local cache=
 	local sleep_time=0
-	local url="https://t1-new.n8.io"
+	local url="https://t1.n8.io"
 	local api="api/readings?format=shell"
 	local cache_dir="$HOME/Library/Caches/io.n8.t1"
 	local env_file="$cache_dir/latest.env"
