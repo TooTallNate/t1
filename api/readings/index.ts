@@ -5,7 +5,7 @@ import createDexcomIterator, {
 	Trend,
 } from 'dexcom-share';
 import { snakeCase } from 'snake-case';
-import { NowRequest, NowResponse } from '@now/node';
+import { NowRequest, NowResponse } from '@vercel/node';
 
 interface Reading {
 	date: Date;
