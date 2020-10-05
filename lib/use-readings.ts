@@ -18,6 +18,7 @@ async function fetcher(endpoint: string): Promise<ReadingsPayload> {
 	}
 
 	// Add projected readings
+	/*
 	for (let i = 0; i < 10; i++) {
 		body.readings.push({
 			date: latestReading.date + (i * ms('5m')),
@@ -25,6 +26,7 @@ async function fetcher(endpoint: string): Promise<ReadingsPayload> {
 			projectedLower: latestReading.value - (i * 5),
 		});
 	}
+	*/
 
 	const expires = res.headers.get('expires');
 	body.expires = typeof expires === 'string' ? new Date(expires).getTime() : 0;
