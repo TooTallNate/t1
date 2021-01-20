@@ -11,6 +11,7 @@ interface FaviconContentsProps {
 export default function FaviconContents({
 	latestReading,
 }: FaviconContentsProps) {
+	if (!latestReading) return null;
 	const delta = formatPlus(latestReading.delta);
 	const trend = arrow(latestReading.trend);
 	const bottom = `${delta} ${trend}`;
