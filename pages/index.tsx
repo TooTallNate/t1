@@ -2,14 +2,13 @@ import ms from 'ms';
 import Head from 'next/head';
 import { useState } from 'react';
 
-import { arrow } from '@lib/trend';
-import favicon from '@lib/favicon';
 import useInterval from '@lib/use-interval';
 import useReadings from '@lib/use-readings';
-import { formatPlus, formatTitle } from '@lib/format';
+import { formatTitle } from '@lib/format';
 
 import Clock from '@components/clock';
 import Favicon from '@components/favicon';
+import FaviconContents from '@components/favicon-contents';
 import MainChart from '@components/chart-main';
 import ExtendedChart from '@components/chart-extended';
 import LatestReading from '@components/latest-reading';
@@ -19,36 +18,6 @@ export default function Index() {
 	const [favicon, setFavicon] = useState('');
 	const { data, error } = useReadings(maxCount);
 	const latestReading = data?.latestReading;
-
-	let faviconContents = null;
-	if (latestReading) {
-		faviconContents = (
-			<>
-				<style>{`
-				  .favicon {
-				    font-weight: bold;
-				    color: black;
-				    width: 100%;
-				    height: 100%;
-				    text-align: center;
-				    font-family: sans-serif;
-				  }
-				  .bottom {
-				    font-size: 87%;
-				  }
-				  @media (prefers-color-scheme: dark) {
-				    .favicon { color: white; }
-				  }
-				`}</style>
-				<div className="favicon">
-					<div className="top">{latestReading.value}</div>
-					<div className="bottom">{`${formatPlus(
-						latestReading.delta
-					)} ${arrow(latestReading.trend)}`}</div>
-				</div>
-			</>
-		);
-	}
 
 	return (
 		<>
@@ -62,7 +31,7 @@ export default function Index() {
 			</Head>
 
 			<Favicon setFavicon={setFavicon} width={34} height={34}>
-				{faviconContents}
+				<FaviconContents latestReading={latestReading} />
 			</Favicon>
 
 			<div className="top">

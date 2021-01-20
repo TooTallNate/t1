@@ -1,0 +1,18 @@
+.favicon {
+	color: black;
+	width: 100%;
+	text-align: center;
+	font-family: sans-serif;
+	white-space: nowrap;
+	text-shadow: 0px 0px 5px red;
+}
+
+.bottom {
+	font-size: 84%;
+}
+
+@media (prefers-color-scheme: dark) {
+	.favicon {
+		color: white;
+	}
+}
