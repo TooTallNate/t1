@@ -54,9 +54,13 @@ export default function Favicon({
 			.join('\n');
 		setStyles(css);
 
-		const stylesheets = [
-			...document.querySelectorAll('link[rel="stylesheet"]'),
-		].map((link) => link.getAttribute('href'));
+		const stylesheets: string[] = [];
+		for (const link of document.querySelectorAll('link[rel="stylesheet"]')) {
+			const href = link.getAttribute('href');
+			if (href) {
+				stylesheets.push(href);
+			}
+		}
 		console.log({ stylesheets });
 		setStylesheets(stylesheets);
 
