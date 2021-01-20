@@ -36,6 +36,7 @@ export default function Favicon({
 }: any) {
 	const div = useRef<HTMLDivElement | null>(null);
 	const [styles, setStyles] = useState('');
+	const [stylesheets, setStylesheets] = useState<string[]>([]);
 
 	useEffect(() => {
 		if (!div.current) return;
@@ -52,6 +53,12 @@ export default function Favicon({
 			.map((el) => removeSourceMappingURL(el.innerHTML))
 			.join('\n');
 		setStyles(css);
+
+		const stylesheets = [
+			...document.querySelectorAll('link[rel="stylesheet"]'),
+		].map((link) => link.getAttribute('href'));
+		console.log({ stylesheets });
+		setStylesheets(stylesheets);
 
 		const observer = new MutationObserver(update);
 		observer.observe(div.current, {
@@ -88,6 +95,9 @@ export default function Favicon({
 				xmlns="http://www.w3.org/2000/svg"
 			>
 				<foreignObject width="100%" height="100%">
+					{stylesheets.map((href) => (
+						<link ref="stylesheet" href={href} key={href} />
+					))}
 					<style>{styles}</style>
 					<div
 						// @ts-ignore
