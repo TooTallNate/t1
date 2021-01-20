@@ -15,7 +15,7 @@ function removeSourceMappingURL(input: string): string {
 		.join('\n');
 }
 
-function getClassNames(el: HTMLElement, classNames: string[] = []): string[] {
+function getClassNames(el: Element, classNames: string[] = []): string[] {
 	const className = typeof el.className === 'string' && el.className.trim();
 	if (className) {
 		classNames.push(...className.split(/\s+/));
@@ -34,7 +34,7 @@ export default function Favicon({
 	children,
 	setFavicon,
 }: any) {
-	const div = useRef();
+	const div = useRef<HTMLDivElement | null>(null);
 	const [styles, setStyles] = useState('');
 
 	useEffect(() => {
@@ -64,8 +64,8 @@ export default function Favicon({
 		let previousHtml = '';
 
 		function update() {
-			const html = div.current.innerHTML;
-			if (html === previousHtml) return;
+			const html = div.current?.innerHTML;
+			if (!html || html === previousHtml) return;
 
 			const favicon = `data:image/svg+xml,${encodeURIComponent(html)}`;
 			previousHtml = html;
@@ -90,6 +90,7 @@ export default function Favicon({
 				<foreignObject width="100%" height="100%">
 					<style>{styles}</style>
 					<div
+						// @ts-ignore
 						xmlns="http://www.w3.org/1999/xhtml"
 						style={{ width: '100%', height: '100%' }}
 					>
