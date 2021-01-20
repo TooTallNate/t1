@@ -42,36 +42,58 @@ export default function Favicon({
 		if (!div.current) return;
 		debug('useEffect');
 
-		const classNames = getClassNames(div.current);
+		const observers = new Map<Element, MutationObserver>();
 
-		const styles = [...document.querySelectorAll('style')].filter((el) => {
-			const css = el.innerHTML;
-			return classNames.some((c) => css.includes(`.${c}`));
+		function updateStyles() {
+			if (!div.current) return [];
+			const classNames = getClassNames(div.current);
+			const styles = [...document.querySelectorAll('head style')].filter(
+				(el) => {
+					const css = el.innerHTML;
+					return classNames.some((c) => css.includes(`.${c}`));
+				}
+			);
+			const css = styles
+				.map((el) => removeSourceMappingURL(el.innerHTML))
+				.join('\n');
+			setStyles(css);
+			return styles;
+		}
+		const styles = updateStyles();
+		styles.forEach((style) => {
+			const observer = new MutationObserver(() => {
+				updateStyles();
+			});
+			observers.set(style, observer);
+			observer.observe(style, {
+				subtree: true,
+				childList: true,
+				attributes: true,
+				characterData: true,
+			});
 		});
 
-		const css = styles
-			.map((el) => removeSourceMappingURL(el.innerHTML))
-			.join('\n');
-		setStyles(css);
-
 		const stylesheets: string[] = [];
-		for (const link of document.querySelectorAll('link[rel="stylesheet"]')) {
+		for (const link of document.querySelectorAll(
+			'head link[rel="stylesheet"]'
+		)) {
 			const href = link.getAttribute('href');
 			if (href) {
 				stylesheets.push(href);
 			}
 		}
-		console.log({ stylesheets });
-		Promise.all(stylesheets.map(async href => {
-			const res = await fetch(href);
-			const body = await res.text();
-			console.log({ href, body });
-			return body;
-		})).then(data => {
+		Promise.all(
+			stylesheets.map(async (href) => {
+				const res = await fetch(href);
+				const body = await res.text();
+				return body;
+			})
+		).then((data) => {
 			setStylesheets(data.join('\n'));
 		});
 
 		const observer = new MutationObserver(update);
+		observers.set(div.current, observer);
 		observer.observe(div.current, {
 			subtree: true,
 			childList: true,
@@ -94,7 +116,9 @@ export default function Favicon({
 
 		return () => {
 			debug('Disconnect');
-			observer.disconnect();
+			for (const observer of observers.values()) {
+				observer.disconnect();
+			}
 		};
 	}, []);
 
