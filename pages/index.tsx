@@ -8,7 +8,6 @@ import { formatTitle } from '@lib/format';
 
 import Clock from '@components/clock';
 import Favicon from '@components/favicon';
-import FaviconCount from '@components/favicon-count';
 import FaviconContents from '@components/favicon-contents';
 import MainChart from '@components/chart-main';
 import ExtendedChart from '@components/chart-extended';
@@ -32,8 +31,7 @@ export default function Index() {
 			</Head>
 
 			<Favicon setFavicon={setFavicon} width={34} height={34}>
-				{/*<FaviconContents latestReading={latestReading} />*/}
-				<FaviconCount />
+				<FaviconContents latestReading={latestReading} />
 			</Favicon>
 
 			<div className="top">

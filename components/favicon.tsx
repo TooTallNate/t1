@@ -83,11 +83,7 @@ export default function Favicon({
 			}
 		}
 		Promise.all(
-			stylesheets.map(async (href) => {
-				const res = await fetch(href);
-				const body = await res.text();
-				return body;
-			})
+			stylesheets.map((href) => fetch(href).then((r) => r.text()))
 		).then((data) => {
 			setStylesheets(data.join('\n'));
 		});
