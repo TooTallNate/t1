@@ -100,7 +100,7 @@ export default function Favicon({
 			>
 				<foreignObject width="100%" height="100%">
 					{stylesheets.map((href) => (
-						<link ref="stylesheet" href={href} key={href} />
+						<link rel="stylesheet" href={href} key={href} />
 					))}
 					<style>{styles}</style>
 					<div
