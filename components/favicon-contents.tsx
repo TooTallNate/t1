@@ -5,7 +5,7 @@ import { LatestReading } from '@lib/types';
 import styles from '@styles/favicon.module.css';
 
 interface FaviconContentsProps {
-	lastestReading?: LatestReading;
+	latestReading?: LatestReading;
 }
 
 export default function FaviconContents({
