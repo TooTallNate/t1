@@ -10,27 +10,20 @@ import {
 	Line,
 } from 'recharts';
 
+import useNow from '@lib/use-now';
 import { ReadingsPayload } from '@lib/types';
 import { formatHoursMinutes } from '@lib/format';
 
 import ReadingTooltip from '@components/tooltip';
 
-interface ExtendedChartProps extends Partial<ReadingsPayload> {
-	now: number;
-}
+interface ExtendedChartProps extends Partial<ReadingsPayload> {}
 
-export default function ExtendedChart({
-	now,
-	units,
-	readings
-}: ExtendedChartProps) {
-	const xDomain: [AxisDomain, AxisDomain] = [
-		() => now - ms('1d'),
-		() => now
-	];
+export default function ExtendedChart({ units, readings }: ExtendedChartProps) {
+	const { now } = useNow();
+	const xDomain: [AxisDomain, AxisDomain] = [() => now - ms('1d'), () => now];
 	const dotStyle = {
 		stroke: '#8884d8',
-		r: 1.5
+		r: 1.5,
 	};
 	return (
 		<ResponsiveContainer height="20%" width="100%" className="container">
@@ -52,7 +45,10 @@ export default function ExtendedChart({
 					hide={true}
 					domain={[35, 400]}
 				/>
-				<Tooltip isAnimationActive={false} content={<ReadingTooltip units={units} />} />
+				<Tooltip
+					isAnimationActive={false}
+					content={<ReadingTooltip units={units} />}
+				/>
 				<ReferenceLine y={80} stroke="#666" strokeDasharray="3 3" />
 				<ReferenceLine y={180} stroke="#666" strokeDasharray="3 3" />
 				<Line

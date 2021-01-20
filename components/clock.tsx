@@ -1,13 +1,14 @@
 import ms from 'ms';
-import { formatHoursMinutes } from '@lib/format';
+import useNow from '@lib/use-now';
 import { LatestReading } from '@lib/types';
+import { formatHoursMinutes } from '@lib/format';
 
 interface ClockProps {
-	now: number;
 	latestReading?: LatestReading;
 }
 
-export default function Clock({ now, latestReading }: ClockProps) {
+export default function Clock({ latestReading }: ClockProps) {
+	const { now } = useNow();
 	let ago = '-';
 	let unit = 'minutes';
 	if (latestReading) {
@@ -20,7 +21,9 @@ export default function Clock({ now, latestReading }: ClockProps) {
 	return (
 		<div className="clock">
 			<div className="time">{formatHoursMinutes(new Date(now))}</div>
-			<div className="ago"><span>{ago}</span> {unit} ago</div>
+			<div className="ago">
+				<span>{ago}</span> {unit} ago
+			</div>
 			<style jsx>{`
 				.clock {
 					height: 20%;
@@ -37,5 +40,5 @@ export default function Clock({ now, latestReading }: ClockProps) {
 				}
 			`}</style>
 		</div>
-	)
+	);
 }

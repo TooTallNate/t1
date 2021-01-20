@@ -10,23 +10,19 @@ import {
 	Line,
 } from 'recharts';
 
+import useNow from '@lib/use-now';
 import { ReadingsPayload } from '@lib/types';
 import { formatHoursMinutes } from '@lib/format';
 
 import ReadingTooltip from '@components/tooltip';
 
-interface MainChartProps extends Partial<ReadingsPayload> {
-	now: number;
-}
+interface MainChartProps extends Partial<ReadingsPayload> {}
 
-export default function MainChart({
-	now,
-	units,
-	readings
-}: MainChartProps) {
+export default function MainChart({ units, readings }: MainChartProps) {
+	const { now } = useNow();
 	const xDomain: [AxisDomain, AxisDomain] = [
 		() => now - ms('3h'),
-		() => now + ms('30m')
+		() => now + ms('30m'),
 	];
 	return (
 		<ResponsiveContainer height="50%" width="100%">
@@ -48,7 +44,10 @@ export default function MainChart({
 					scale="log"
 					domain={[35, 400]}
 				/>
-				<Tooltip isAnimationActive={false} content={<ReadingTooltip units={units} />} />
+				<Tooltip
+					isAnimationActive={false}
+					content={<ReadingTooltip units={units} />}
+				/>
 				<ReferenceLine y={55} stroke="#666" strokeDasharray="1 5" />
 				<ReferenceLine y={80} stroke="#333" strokeDasharray="4 3" />
 				<ReferenceLine y={180} stroke="#333" strokeDasharray="4 3" />

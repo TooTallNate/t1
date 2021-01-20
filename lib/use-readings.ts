@@ -20,14 +20,15 @@ async function fetcher(endpoint: string): Promise<ReadingsPayload> {
 	// Add projected readings
 	for (let i = 0; i < 10; i++) {
 		body.readings.push({
-			date: latestReading.date + (i * ms('5m')),
-			projectedUpper: latestReading.value + (i * 5),
-			projectedLower: latestReading.value - (i * 5),
+			date: latestReading.date + i * ms('5m'),
+			projectedUpper: latestReading.value + i * 5,
+			projectedLower: latestReading.value - i * 5,
 		});
 	}
 
 	const expires = res.headers.get('expires');
-	body.expires = typeof expires === 'string' ? new Date(expires).getTime() : 0;
+	body.expires =
+		typeof expires === 'string' ? new Date(expires).getTime() : 0;
 
 	const cache = res.headers.get('x-vercel-cache');
 	body.cache = typeof cache === 'string' ? cache : 'MISS';
@@ -60,7 +61,7 @@ export default function useReadings(maxCount: number) {
 		}, sleepTime);
 		return () => {
 			debug('clearTimeout(%o)', timer);
-			clearTimeout(timer)
+			clearTimeout(timer);
 		};
 	}, [result.data?.expires, result.data?.cache]);
 
