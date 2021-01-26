@@ -40,21 +40,24 @@ export default function Favicon({
 
 	useEffect(() => {
 		if (!div.current) return;
-		debug('useEffect');
+		debug('Component mounted');
 
 		const observers = new Map<Element, MutationObserver>();
 
 		const head = document.querySelector('head');
-		const headObserver = new MutationObserver(() => {
-			updateStyles();
-		});
-		observers.set(head, headObserver);
-		headObserver.observe(head, {
-			subtree: true,
-			childList: true,
-			attributes: true,
-			characterData: true,
-		});
+		if (head) {
+			const headObserver = new MutationObserver(function () {
+				debug('<head> mutation detected', [...arguments]);
+				updateStyles();
+			});
+			observers.set(head, headObserver);
+			headObserver.observe(head, {
+				subtree: true,
+				childList: true,
+				attributes: true,
+				characterData: true,
+			});
+		}
 
 		function updateStyles() {
 			if (!div.current) return;
@@ -68,6 +71,7 @@ export default function Favicon({
 			styles.forEach((style) => {
 				if (observers.has(style)) return;
 				const observer = new MutationObserver(() => {
+					debug('<style> mutation detected');
 					updateStyles();
 				});
 				observers.set(style, observer);
@@ -114,6 +118,7 @@ export default function Favicon({
 		function update() {
 			const html = div.current?.innerHTML;
 			if (!html || html === previousHtml) return;
+			debug('HTML changed');
 
 			const favicon = `data:image/svg+xml,${encodeURIComponent(html)}`;
 			previousHtml = html;
