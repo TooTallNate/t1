@@ -44,8 +44,20 @@ export default function Favicon({
 
 		const observers = new Map<Element, MutationObserver>();
 
+		const head = document.querySelector('head');
+		const headObserver = new MutationObserver(() => {
+			updateStyles();
+		});
+		observers.set(head, headObserver);
+		headObserver.observe(head, {
+			subtree: true,
+			childList: true,
+			attributes: true,
+			characterData: true,
+		});
+
 		function updateStyles() {
-			if (!div.current) return [];
+			if (!div.current) return;
 			const classNames = getClassNames(div.current);
 			const styles = [...document.querySelectorAll('head style')].filter(
 				(el) => {
@@ -53,25 +65,25 @@ export default function Favicon({
 					return classNames.some((c) => css.includes(`.${c}`));
 				}
 			);
+			styles.forEach((style) => {
+				if (observers.has(style)) return;
+				const observer = new MutationObserver(() => {
+					updateStyles();
+				});
+				observers.set(style, observer);
+				observer.observe(style, {
+					subtree: true,
+					childList: true,
+					attributes: true,
+					characterData: true,
+				});
+			});
 			const css = styles
 				.map((el) => removeSourceMappingURL(el.innerHTML))
 				.join('\n');
 			setStyles(css);
-			return styles;
 		}
-		const styles = updateStyles();
-		styles.forEach((style) => {
-			const observer = new MutationObserver(() => {
-				updateStyles();
-			});
-			observers.set(style, observer);
-			observer.observe(style, {
-				subtree: true,
-				childList: true,
-				attributes: true,
-				characterData: true,
-			});
-		});
+		updateStyles();
 
 		const stylesheets: string[] = [];
 		for (const link of document.querySelectorAll(
