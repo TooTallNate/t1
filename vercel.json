@@ -1,6 +1,0 @@
-{
-  "env": {
-    "DEXCOM_USERNAME": "@dexcom-share-username",
-    "DEXCOM_PASSWORD": "@dexcom-share-password"
-  }
-}

@@ -1,5 +1,4 @@
-/.env
-/.now
+/.env*
 /.vercel
 /.next
 node_modules
