@@ -5,7 +5,7 @@ import createDexcomIterator, {
 	Trend,
 } from 'dexcom-share';
 import { snakeCase } from 'snake-case';
-import { NowRequest, NowResponse } from '@vercel/node';
+import createFetchServer from 'fetch-server';
 
 interface Reading {
 	date: Date;
@@ -78,14 +78,8 @@ function toShell(value: any, prefix = 't1'): string {
 	return str;
 }
 
-export default async (req: NowRequest, res: NowResponse) => {
-	const maxCount =
-		parseInt(
-			Array.isArray(req.query.maxCount)
-				? req.query.maxCount[0]
-				: req.query.maxCount,
-			10
-		) || 2;
+export default createFetchServer(async (req, res) => {
+	const maxCount = parseInt(req.url.searchParams.get('maxCount')!, 10) || 2;
 	iterator.reset();
 	const result = await iterator.read({ maxCount });
 	const readings: Reading[] = result.map(toReading);
@@ -110,8 +104,8 @@ export default async (req: NowRequest, res: NowResponse) => {
 		expiresDate = new Date(now + ms('3s'));
 	}
 
-	res.setHeader('Expires', expiresDate.toUTCString());
-	res.setHeader(
+	res.headers.set('Expires', expiresDate.toUTCString());
+	res.headers.set(
 		'Cache-Control',
 		`s-maxage=${seconds}, immutable, must-revalidate, stale-while-revalidate`
 	);
@@ -122,17 +116,16 @@ export default async (req: NowRequest, res: NowResponse) => {
 		readings,
 		latestReading,
 	};
-	const format =
-		typeof req.query.format === 'string' ? req.query.format : 'json';
+	const format = req.url.searchParams.get('format') || 'json';
 	if (format === 'json') {
-		res.send(data);
+		return data;
 	} else if (format === 'shell') {
-		res.setHeader('Content-Type', 'text/plain; charset=utf8');
-		res.end(toShell(data));
+		res.headers.set('Content-Type', 'text/plain; charset=utf8');
+		return toShell(data);
 	} else {
-		res.statusCode = 400;
-		res.send({
+		res.status = 400;
+		return {
 			error: `Invalid "format": ${format}`,
-		});
+		};
 	}
-};
+});
