@@ -4,7 +4,7 @@ import { arrow } from '@lib/trend';
 import { Reading } from '@lib/types';
 import { formatDate, formatTime } from '@lib/format';
 
-export interface ReadingTooltipProps extends TooltipProps {
+export interface ReadingTooltipProps extends TooltipProps<number, string> {
 	units?: string;
 }
 

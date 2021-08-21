@@ -5,14 +5,12 @@ import {
 	ResponsiveContainer,
 	XAxis,
 	YAxis,
-	AxisDomain,
 	Tooltip,
 	Line,
 } from 'recharts';
 
 import useNow from '@lib/use-now';
 import { ReadingsPayload } from '@lib/types';
-import { formatHoursMinutes } from '@lib/format';
 
 import ReadingTooltip from '@components/tooltip';
 
@@ -20,7 +18,7 @@ interface ExtendedChartProps extends Partial<ReadingsPayload> {}
 
 export default function ExtendedChart({ units, readings }: ExtendedChartProps) {
 	const { now } = useNow();
-	const xDomain: [AxisDomain, AxisDomain] = [() => now - ms('1d'), () => now];
+	const xDomain = [now - ms('1d'), now];
 	const dotStyle = {
 		stroke: '#8884d8',
 		r: 1.5,

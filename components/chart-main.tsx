@@ -5,7 +5,6 @@ import {
 	ResponsiveContainer,
 	XAxis,
 	YAxis,
-	AxisDomain,
 	Tooltip,
 	Line,
 } from 'recharts';
@@ -20,9 +19,9 @@ interface MainChartProps extends Partial<ReadingsPayload> {}
 
 export default function MainChart({ units, readings }: MainChartProps) {
 	const { now } = useNow();
-	const xDomain: [AxisDomain, AxisDomain] = [
-		() => now - ms('3h'),
-		() => now + ms('30m'),
+	const xDomain = [
+		now - ms('3h'),
+		now + ms('30m'),
 	];
 	return (
 		<ResponsiveContainer height="50%" width="100%">
