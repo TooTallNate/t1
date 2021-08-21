@@ -1,8 +1,6 @@
-import ms from 'ms';
 import Head from 'next/head';
 import { useState } from 'react';
 
-import useInterval from '@lib/use-interval';
 import useReadings from '@lib/use-readings';
 import { formatTitle } from '@lib/format';
 
