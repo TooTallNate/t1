@@ -1,4 +1,12 @@
 import ms from 'ms';
+import {
+	Flex,
+	Stat,
+	StatLabel,
+	StatNumber,
+	StatHelpText,
+} from '@chakra-ui/react';
+
 import useNow from '@lib/use-now';
 import { LatestReading } from '@lib/types';
 import { formatHoursMinutes } from '@lib/format';
@@ -19,20 +27,14 @@ export default function Clock({ latestReading }: ClockProps) {
 	}
 
 	return (
-		<div className="clock">
-			<div className="time">{formatHoursMinutes(new Date(now))}</div>
-			<div className="ago">
-				<span>{ago}</span> {unit} ago
-			</div>
-			<style jsx>{`
-				.time {
-					font-size: 6em;
-				}
-
-				.ago {
-					font-size: 1.5em;
-				}
-			`}</style>
-		</div>
+		<Flex alignItems="center">
+			<Stat>
+				<StatLabel>Current Time</StatLabel>
+				<StatNumber>{formatHoursMinutes(new Date(now))}</StatNumber>
+				<StatHelpText>
+					<span>{ago}</span> {unit} ago
+				</StatHelpText>
+			</Stat>
+		</Flex>
 	);
 }

@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { useState } from 'react';
-import { Flex, Spacer } from "@chakra-ui/react"
+import { Flex, Spacer } from '@chakra-ui/react';
 
 import useReadings from '@lib/use-readings';
 import { formatTitle } from '@lib/format';
