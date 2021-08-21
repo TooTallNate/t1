@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { useState } from 'react';
+import { Flex, Spacer } from "@chakra-ui/react"
 
 import useReadings from '@lib/use-readings';
 import { formatTitle } from '@lib/format';
@@ -32,10 +33,11 @@ export default function Index() {
 				<FaviconContents latestReading={latestReading} />
 			</Favicon>
 
-			<div className="top">
-				<LatestReading {...data} />
+			<Flex>
 				<Clock latestReading={latestReading} />
-			</div>
+				<Spacer />
+				<LatestReading {...data} />
+			</Flex>
 
 			<MainChart {...data} />
 
@@ -49,9 +51,6 @@ export default function Index() {
 					padding: 0px;
 					width: 100%;
 					height: 100%;
-					font-family: 'Inter', -apple-system, BlinkMacSystemFont,
-						'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
-						'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 				}
 			`}</style>
 		</>

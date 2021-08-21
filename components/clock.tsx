@@ -25,12 +25,6 @@ export default function Clock({ latestReading }: ClockProps) {
 				<span>{ago}</span> {unit} ago
 			</div>
 			<style jsx>{`
-				.clock {
-					height: 20%;
-					width: 20%;
-					text-align: center;
-				}
-
 				.time {
 					font-size: 6em;
 				}

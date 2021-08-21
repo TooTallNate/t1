@@ -13,13 +13,6 @@ export default function LatestReading({ units, latestReading }: any) {
 			</div>
 
 			<style jsx>{`
-				.latest {
-					height: 20%;
-					width: 30%;
-					float: right;
-					text-align: center;
-				}
-
 				.value {
 					font-size: 7em;
 				}
