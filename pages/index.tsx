@@ -6,6 +6,7 @@ import useReadings from '@lib/use-readings';
 import { formatTitle } from '@lib/format';
 
 import Clock from '@components/clock';
+import Header from '@components/header';
 import Favicon from '@components/favicon';
 import FaviconContents from '@components/favicon-contents';
 import MainChart from '@components/chart-main';
@@ -13,9 +14,9 @@ import ExtendedChart from '@components/chart-extended';
 import LatestReading from '@components/latest-reading';
 
 export default function Index() {
-	const [maxCount, setMaxCount] = useState(300);
+	const [maxCount] = useState(300);
 	const [favicon, setFavicon] = useState('');
-	const { data, error } = useReadings(maxCount);
+	const { data } = useReadings(maxCount);
 	const latestReading = data?.latestReading;
 
 	return (
@@ -33,6 +34,7 @@ export default function Index() {
 				<FaviconContents latestReading={latestReading} />
 			</Favicon>
 
+			<Header />
 			<Flex>
 				<Clock latestReading={latestReading} />
 				<Spacer />
