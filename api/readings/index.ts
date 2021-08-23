@@ -11,11 +11,8 @@ interface Reading {
 	date: Date;
 	trend: Trend;
 	value: number;
-}
-
-interface LatestReading extends Reading {
-	delta: number;
-	delay: DateDiff;
+	delta?: number;
+	delay?: DateDiff;
 }
 
 const READING_INTERVAL = ms('5m');
@@ -48,11 +45,19 @@ class DateDiff {
 	}
 }
 
-function toReading(r: DexcomReading): Reading {
+function toReading(
+	r: DexcomReading,
+	index: number,
+	readings: DexcomReading[]
+): Reading {
+	const prev = index > 0 ? readings[index - 1] : null;
+	const date = new Date(r.Date);
 	return {
-		date: new Date(r.Date),
+		date,
 		trend: r.Trend,
 		value: r.Value,
+		delta: prev ? r.Value - prev.Value : undefined,
+		delay: prev ? new DateDiff(new Date(prev.Date), date) : undefined,
 	};
 }
 
@@ -83,13 +88,7 @@ export default createFetchServer(async (req, res) => {
 	iterator.reset();
 	const result = await iterator.read({ maxCount });
 	const readings: Reading[] = result.map(toReading);
-	const o1 = readings[readings.length - 1];
-	const o2 = readings[readings.length - 2];
-	const latestReading: LatestReading = {
-		...o1,
-		delta: o1.value - o2.value,
-		delay: new DateDiff(o2.date, o1.date),
-	};
+	const latestReading = readings[readings.length - 1];
 
 	const now = Date.now();
 	const expires = latestReading.date.valueOf() + READING_INTERVAL;

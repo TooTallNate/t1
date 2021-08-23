@@ -4,6 +4,7 @@ export interface Reading {
 	date: number;
 	trend: Trend;
 	value: number;
+	delta?: number;
 }
 
 export interface ProjectedReading {
@@ -12,14 +13,10 @@ export interface ProjectedReading {
 	projectedLower: number;
 }
 
-export interface LatestReading extends Reading {
-	delta: number;
-}
-
 export interface ReadingsPayload {
 	expires: number;
 	cache: string;
 	units: string;
 	readings: (Reading | ProjectedReading)[];
-	latestReading: LatestReading;
+	latestReading: Reading;
 }

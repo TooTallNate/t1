@@ -1,7 +1,7 @@
 import { timeFormat } from 'd3-time-format';
 
 import { arrow } from '@lib/trend';
-import { LatestReading } from '@lib/types';
+import { Reading } from '@lib/types';
 
 export const formatHoursMinutes = timeFormat('%H:%M');
 export const formatDate = timeFormat('%-m/%-d/%Y');
@@ -14,8 +14,8 @@ export function formatPlus(value: number): string {
 	return String(value);
 }
 
-export function formatTitle(reading?: LatestReading): string {
+export function formatReading(reading?: Reading): string {
 	if (!reading) return '';
 	const { value, delta, trend } = reading;
-	return `${value} ${formatPlus(delta)} ${arrow(trend)}`;
+	return `${value} ${formatPlus(delta || 0)} ${arrow(trend)}`;
 }

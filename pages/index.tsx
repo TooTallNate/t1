@@ -1,10 +1,12 @@
 import Head from 'next/head';
 import { useState } from 'react';
+import { Box, Flex, Spacer } from '@chakra-ui/react';
 
 import useReadings from '@lib/use-readings';
-import { formatTitle } from '@lib/format';
+import { formatReading } from '@lib/format';
 
 import Clock from '@components/clock';
+import Header from '@components/header';
 import Favicon from '@components/favicon';
 import FaviconContents from '@components/favicon-contents';
 import MainChart from '@components/chart-main';
@@ -12,15 +14,15 @@ import ExtendedChart from '@components/chart-extended';
 import LatestReading from '@components/latest-reading';
 
 export default function Index() {
-	const [maxCount, setMaxCount] = useState(300);
+	const [maxCount] = useState(300);
 	const [favicon, setFavicon] = useState('');
-	const { data, error } = useReadings(maxCount);
+	const { data } = useReadings(maxCount);
 	const latestReading = data?.latestReading;
 
 	return (
 		<>
 			<Head>
-				<title>{formatTitle(latestReading)}</title>
+				<title>{formatReading(latestReading)}</title>
 				{favicon && <link rel="icon" href={favicon} />}
 				<meta
 					name="viewport"
@@ -32,10 +34,15 @@ export default function Index() {
 				<FaviconContents latestReading={latestReading} />
 			</Favicon>
 
-			<div className="top">
-				<LatestReading {...data} />
-				<Clock latestReading={latestReading} />
-			</div>
+			<Header />
+
+			<Box px={6}>
+				<Flex>
+					<Clock latestReading={latestReading} />
+					<Spacer />
+					<LatestReading {...data} />
+				</Flex>
+			</Box>
 
 			<MainChart {...data} />
 
@@ -49,9 +56,6 @@ export default function Index() {
 					padding: 0px;
 					width: 100%;
 					height: 100%;
-					font-family: 'Inter', -apple-system, BlinkMacSystemFont,
-						'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
-						'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 				}
 			`}</style>
 		</>
