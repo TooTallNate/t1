@@ -8,6 +8,7 @@ import {
 	Tooltip,
 	Line,
 } from 'recharts';
+import { useTheme, useColorModeValue } from '@chakra-ui/react';
 
 import useNow from '@lib/use-now';
 import { ReadingsPayload } from '@lib/types';
@@ -19,7 +20,28 @@ interface MainChartProps extends Partial<ReadingsPayload> {}
 
 export default function MainChart({ units, readings }: MainChartProps) {
 	const { now } = useNow();
+	const theme = useTheme();
 	const xDomain = [now - ms('3h'), now + ms('30m')];
+	const refLineDarkStroke = useColorModeValue(
+		theme.colors.gray[400],
+		theme.colors.gray[600]
+	);
+	const refLineLightStroke = useColorModeValue(
+		theme.colors.gray[400],
+		theme.colors.gray[600]
+	);
+	const lineStroke = useColorModeValue(
+		theme.colors.green[500],
+		theme.colors.green[300]
+	);
+	const lineFill = useColorModeValue(
+		theme.colors.gray[50],
+		theme.colors.gray[800]
+	);
+	const projectedStroke = useColorModeValue(
+		theme.colors.gray[300],
+		theme.colors.gray[600]
+	);
 	return (
 		<ResponsiveContainer height="50%" width="100%">
 			<LineChart
@@ -44,29 +66,48 @@ export default function MainChart({ units, readings }: MainChartProps) {
 					isAnimationActive={false}
 					content={<ReadingTooltip units={units} />}
 				/>
-				<ReferenceLine y={55} stroke="#666" strokeDasharray="1 5" />
-				<ReferenceLine y={80} stroke="#333" strokeDasharray="4 3" />
-				<ReferenceLine y={180} stroke="#333" strokeDasharray="4 3" />
-				<ReferenceLine y={240} stroke="#666" strokeDasharray="1 5" />
+				<ReferenceLine
+					y={55}
+					stroke={refLineLightStroke}
+					strokeDasharray="1 5"
+				/>
+				<ReferenceLine
+					y={80}
+					stroke={refLineDarkStroke}
+					strokeDasharray="4 3"
+				/>
+				<ReferenceLine
+					y={180}
+					stroke={refLineDarkStroke}
+					strokeDasharray="4 3"
+				/>
+				<ReferenceLine
+					y={240}
+					stroke={refLineLightStroke}
+					strokeDasharray="1 5"
+				/>
 				<Line
 					type="monotone"
 					dataKey="projectedUpper"
-					stroke="#ccc"
+					fill={lineFill}
+					stroke={projectedStroke}
 					isAnimationActive={false}
 				/>
 				<Line
 					type="monotone"
 					dataKey="projectedLower"
-					stroke="#ccc"
+					fill={lineFill}
+					stroke={projectedStroke}
 					isAnimationActive={false}
 				/>
 				<Line
 					type="monotone"
 					dataKey="value"
-					stroke="green"
+					fill={lineFill}
+					stroke={lineStroke}
 					isAnimationActive={false}
 				/>
-				<ReferenceLine x={now} stroke="#333" />
+				<ReferenceLine x={now} stroke={refLineDarkStroke} />
 			</LineChart>
 		</ResponsiveContainer>
 	);

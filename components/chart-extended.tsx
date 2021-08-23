@@ -20,7 +20,7 @@ export default function ExtendedChart({ units, readings }: ExtendedChartProps) {
 	const { now } = useNow();
 	const xDomain = [now - ms('1d'), now];
 	const dotStyle = {
-		stroke: '#8884d8',
+		fill: '#8884d8',
 		r: 1.5,
 	};
 	return (

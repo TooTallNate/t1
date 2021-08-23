@@ -1,9 +1,9 @@
 import Head from 'next/head';
 import { useState } from 'react';
-import { Flex, Spacer } from '@chakra-ui/react';
+import { Box, Flex, Spacer } from '@chakra-ui/react';
 
 import useReadings from '@lib/use-readings';
-import { formatTitle } from '@lib/format';
+import { formatReading } from '@lib/format';
 
 import Clock from '@components/clock';
 import Header from '@components/header';
@@ -22,7 +22,7 @@ export default function Index() {
 	return (
 		<>
 			<Head>
-				<title>{formatTitle(latestReading)}</title>
+				<title>{formatReading(latestReading)}</title>
 				{favicon && <link rel="icon" href={favicon} />}
 				<meta
 					name="viewport"
@@ -35,11 +35,14 @@ export default function Index() {
 			</Favicon>
 
 			<Header />
-			<Flex>
-				<Clock latestReading={latestReading} />
-				<Spacer />
-				<LatestReading {...data} />
-			</Flex>
+
+			<Box px={6}>
+				<Flex>
+					<Clock latestReading={latestReading} />
+					<Spacer />
+					<LatestReading {...data} />
+				</Flex>
+			</Box>
 
 			<MainChart {...data} />
 
