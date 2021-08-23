@@ -1,18 +1,18 @@
 import { arrow } from '@lib/trend';
 import { formatPlus } from '@lib/format';
-import { LatestReading } from '@lib/types';
+import { Reading } from '@lib/types';
 
 import styles from '@styles/favicon.module.css';
 
 interface FaviconContentsProps {
-	latestReading?: LatestReading;
+	latestReading?: Reading;
 }
 
 export default function FaviconContents({
 	latestReading,
 }: FaviconContentsProps) {
 	if (!latestReading) return null;
-	const delta = formatPlus(latestReading.delta);
+	const delta = formatPlus(latestReading.delta!);
 	const trend = arrow(latestReading.trend);
 	const bottom = `${delta} ${trend}`;
 	return (
