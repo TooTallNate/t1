@@ -1,5 +1,5 @@
 import ms from 'ms';
-import { isDate } from 'util';
+import { types } from 'util';
 import createDexcomIterator, {
 	Reading as DexcomReading,
 	Trend,
@@ -63,9 +63,11 @@ function toReading(
 
 function toShell(value: any, prefix = 't1'): string {
 	let str = '';
-	if (typeof value === 'string' || typeof value === 'number') {
+	if (typeof value === 'undefined') {
+		return str;
+	} else if (typeof value === 'string' || typeof value === 'number') {
 		str += `${prefix}=${JSON.stringify(value)}\n`;
-	} else if (isDate(value)) {
+	} else if (types.isDate(value)) {
 		str += `${prefix}=${Math.round(value.valueOf() / 1000)}\n`;
 	} else if (Array.isArray(value)) {
 		str += `${prefix}_count=${value.length}\n`;
