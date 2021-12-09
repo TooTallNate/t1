@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "ISC",
   "dependencies": {
-    "dexcom-share": "^3.2.0",
+    "dexcom-share": "^3.3.1",
     "fetch-server": "^0.0.5",
     "ms": "2.1.2",
     "snake-case": "^3.0.3"
