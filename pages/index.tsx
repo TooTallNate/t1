@@ -24,10 +24,6 @@ export default function Index() {
 			<Head>
 				<title>{formatReading(latestReading)}</title>
 				{favicon && <link rel="icon" href={favicon} />}
-				<meta
-					name="viewport"
-					content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-				/>
 			</Head>
 
 			<Favicon setFavicon={setFavicon} width={34} height={34}>
