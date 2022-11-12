@@ -1,0 +1,37 @@
+#!/bin/bash
+. "$(command -v import)"
+import "date"
+
+t1_cache_dir="$(import_cache_dir io.n8.t1)"
+
+r=
+cache=
+sleep_time=0
+url="https://t1.n8.io"
+api="api/readings?format=shell"
+env_file="$t1_cache_dir/latest.env"
+tmp_env_file="$t1_cache_dir/latest.tmp"
+headers_file="$t1_cache_dir/latest.headers"
+while sleep "$sleep_time"; do
+    mkdir -p "$t1_cache_dir"
+    r=0
+    curl -sfLS \
+        --netrc-optional \
+        --dump-header "$headers_file" \
+        "$url/$api" > "$tmp_env_file" || r=$?
+    if [ "$r" -eq 0 ]; then
+        . "$tmp_env_file"
+        sleep_time="$(expr "$t1_expires" - "$(date_now)")"
+        if [ "$sleep_time" -lt 1 ]; then
+            # Force a minimum sleep time of 1 second if the data is stale
+            sleep_time=1
+        fi
+
+        cache="$(grep -i "^x-vercel-cache:" < "$headers_file" | awk -F": " '{print $2}' | tr -d \\r)"
+        echo -e "value: $t1_latest_reading_value, expires: $t1_expires,\tsleep seconds: $sleep_time,\tcache: $cache"
+        mv "$tmp_env_file" "$env_file"
+    else
+        # curl failed
+        sleep_time=5
+    fi
+done
