@@ -2,7 +2,7 @@
 set -euo pipefail
 
 . "$(command -v import)"
-import "date"
+import "date@0.0.1"
 
 t1_cache_dir="$(import_cache_dir io.n8.t1)"
 

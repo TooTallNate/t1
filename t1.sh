@@ -1,5 +1,5 @@
 import "color"
-import "date"
+import "date@0.0.1"
 import "string@0.2.0"
 
 t1_ps1() {
