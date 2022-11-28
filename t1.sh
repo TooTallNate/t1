@@ -2,6 +2,8 @@ import "color"
 import "date@0.0.1"
 import "string@0.2.0"
 
+t1_cache_dir="$(import_cache_dir io.n8.t1)"
+
 t1_ps1() {
 	local trend=
 	local seconds_ago=
