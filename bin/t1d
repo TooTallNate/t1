@@ -23,7 +23,7 @@ while sleep "$sleep_time"; do
         "$url/$api" > "$tmp_env_file" || r=$?
     if [ "$r" -eq 0 ]; then
         . "$tmp_env_file"
-        sleep_time="$(expr "$t1_expires" - "$(date_now)")"
+        sleep_time="$(expr "$t1_expires" - "$(date_now)")" || true
         if [ "$sleep_time" -lt 1 ]; then
             # Force a minimum sleep time of 1 second if the data is stale
             sleep_time=1
