@@ -17,7 +17,7 @@ t1_ps1() {
 
 	if [ -z "$bgl" ]; then
 		echo "${COLOR_RED}Error:${COLOR_RESET} Could not load t1 env vars at \"$env_file\"." >&2
-		echo "Please make sure \`t1_daemon\` is running." >&2
+		echo "Please ensure the \`t1d\` service is running." >&2
 		return
 	fi
 
