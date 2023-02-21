@@ -1,5 +1,4 @@
 /.env*
 /.vercel
 /.next
-/.output
 node_modules
