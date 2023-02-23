@@ -85,8 +85,9 @@ function toShell(value: any, prefix = 't1'): string {
 	return str;
 }
 
-export default createFetchServer(async (req, res) => {
-	const maxCount = parseInt(req.url.searchParams.get('maxCount')!, 10) || 2;
+export default createFetchServer(async req => {
+	const url = new URL(req.url);
+	const maxCount = parseInt(url.searchParams.get('maxCount')!, 10) || 2;
 	iterator.reset();
 	const result = await iterator.read({ maxCount });
 	const readings: Reading[] = result.map(toReading);
@@ -105,8 +106,10 @@ export default createFetchServer(async (req, res) => {
 		expiresDate = new Date(now + ms('3s'));
 	}
 
-	res.headers.set('Expires', expiresDate.toUTCString());
-	res.headers.set(
+	const headers = new Headers();
+	headers.set('Content-Type', 'application/json; charset=utf8');
+	headers.set('Expires', expiresDate.toUTCString());
+	headers.set(
 		'Cache-Control',
 		`s-maxage=${seconds}, immutable, must-revalidate, stale-while-revalidate`
 	);
@@ -117,16 +120,19 @@ export default createFetchServer(async (req, res) => {
 		readings,
 		latestReading,
 	};
-	const format = req.url.searchParams.get('format') || 'json';
+	const format = url.searchParams.get('format') || 'json';
+	let status = 200;
+	let body: string;
 	if (format === 'json') {
-		return data;
+		body = JSON.stringify(data);
 	} else if (format === 'shell') {
-		res.headers.set('Content-Type', 'text/plain; charset=utf8');
-		return toShell(data);
+		headers.set('Content-Type', 'text/plain; charset=utf8');
+		body = toShell(data);
 	} else {
-		res.status = 400;
-		return {
+		status = 400;
+		body = JSON.stringify({
 			error: `Invalid "format": ${format}`,
-		};
+		});
 	}
+	return new Response(body, { status, headers });
 });

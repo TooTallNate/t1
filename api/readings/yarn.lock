@@ -45,10 +45,10 @@ dot-case@^3.0.3:
     no-case "^3.0.3"
     tslib "^1.10.0"
 
-fetch-server@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/fetch-server/-/fetch-server-0.0.5.tgz#94bfbf93398efcc972ae876d413506fd2d25eb0c"
-  integrity sha512-rSGD1Uh9YYYxpe6pfKn/bbHiYj4eJGoMAIhNEE+HVAjgC+O+MiF0uEe+PdLeAllODVmkUkm3z8DogxuWLBRauQ==
+fetch-server@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/fetch-server/-/fetch-server-1.0.2.tgz#70b4ee151ea83ab63fe3e29aadd1d0b94e3ec598"
+  integrity sha512-4kPmkAuzZomiCPjJ3G/BI6MXWZ9nbZxD5wemIQRIZ37J9sdmkGw887qOGl99hd35c578z61huf/Y7eVCpoqZoQ==
 
 lower-case@^2.0.1:
   version "2.0.1"
