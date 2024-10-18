@@ -111,10 +111,7 @@ export default createFetchServer(async req => {
 	const headers = new Headers();
 	headers.set('Content-Type', 'application/json; charset=utf8');
 	headers.set('Expires', expiresDate.toUTCString());
-	headers.set(
-		'Cache-Control',
-		`s-maxage=${seconds}, immutable, must-revalidate, stale-while-revalidate`
-	);
+	headers.set('Cache-Control', `s-maxage=${seconds}, stale-while-revalidate`);
 
 	const data = {
 		expires: expiresDate,
