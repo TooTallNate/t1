@@ -1,8 +1,8 @@
 import ms from 'ms';
-import { types } from 'util';
+import { types } from 'node:util';
 import createDexcomIterator, {
-	Reading as DexcomReading,
-	Trend,
+	type Reading as DexcomReading,
+	type Trend,
 } from 'dexcom-share';
 import { snakeCase } from 'snake-case';
 import createFetchServer from 'fetch-server';
@@ -65,7 +65,8 @@ function toShell(value: any, prefix = 't1'): string {
 	let str = '';
 	if (typeof value === 'undefined') {
 		return str;
-	} else if (typeof value === 'string' || typeof value === 'number') {
+	}
+	if (typeof value === 'string' || typeof value === 'number') {
 		str += `${prefix}=${JSON.stringify(value)}\n`;
 	} else if (types.isDate(value)) {
 		str += `${prefix}=${Math.round(value.valueOf() / 1000)}\n`;
