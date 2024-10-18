@@ -88,7 +88,7 @@ function toShell(value: any, prefix = 't1'): string {
 
 export default createFetchServer(async req => {
 	const url = new URL(req.url);
-	const maxCount = parseInt(url.searchParams.get('maxCount')!, 10) || 2;
+	const maxCount = Number.parseInt(url.searchParams.get('maxCount')!, 10) || 2;
 	iterator.reset();
 	const result = await iterator.read({ maxCount });
 	const readings: Reading[] = result.map(toReading);
