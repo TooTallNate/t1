@@ -32,19 +32,12 @@ const fetcher = async (url: string) => {
 };
 
 export default function GlucoseMonitor() {
-	const [selectedRange, setSelectedRange] = useState(12);
+	const [selectedRange, setSelectedRange] = useState(6);
 	const [currentTime, setCurrentTime] = useState(new Date());
 	const [theme, setTheme] = useState<"light" | "dark" | "system">("system");
 
-	// Calculate maxCount based on selected range
-	const maxCount =
-		selectedRange <= 3
-			? 36
-			: selectedRange <= 12
-				? 144
-				: selectedRange <= 24
-					? 288
-					: 864;
+	// Always fetch 24h of data (288 data points at 5-minute intervals)
+	const maxCount = 288;
 
 	// Use SWR for data fetching
 	const { data, error, isLoading } = useSWR<ReadingsData>(
@@ -95,8 +88,8 @@ export default function GlucoseMonitor() {
 
 	return (
 		<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-			<div className="min-h-screen bg-background p-4 md:p-6">
-				<div className="mx-auto max-w-7xl space-y-6">
+			<div className="h-screen overflow-hidden bg-background p-4 md:p-6">
+				<div className="mx-auto max-w-7xl h-full flex flex-col gap-4 md:gap-6">
 					<DashboardHeader theme={theme} onThemeToggle={toggleTheme} />
 
 					{/* Current Time & Latest Reading */}
@@ -112,13 +105,15 @@ export default function GlucoseMonitor() {
 					</div>
 
 					{/* Glucose Chart */}
-					<GlucoseChart
-						readings={data?.readings}
-						selectedRange={selectedRange}
-						onRangeChange={setSelectedRange}
-						loading={isLoading}
-						error={error?.message}
-					/>
+					<div className="flex-1 min-h-0">
+						<GlucoseChart
+							readings={data?.readings}
+							selectedRange={selectedRange}
+							onRangeChange={setSelectedRange}
+							loading={isLoading}
+							error={error?.message}
+						/>
+					</div>
 				</div>
 			</div>
 		</ThemeProvider>

@@ -73,12 +73,10 @@ export function LatestReadingCard({
 
 	return (
 		<Card className="bg-card border-border">
-			<CardHeader className="pb-2">
-				<CardTitle className="text-sm font-medium text-muted-foreground">
-					Latest Reading
-				</CardTitle>
+			<CardHeader>
+				<CardTitle className="text-foreground">Latest Reading</CardTitle>
 			</CardHeader>
-			<CardContent className="pt-0">
+			<CardContent>
 				{loading ? (
 					<div className="text-3xl font-bold text-muted-foreground">
 						Loading...

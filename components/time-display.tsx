@@ -9,12 +9,10 @@ interface TimeDisplayProps {
 export function TimeDisplay({ currentTime }: TimeDisplayProps) {
 	return (
 		<Card className="bg-card border-border">
-			<CardHeader className="pb-2">
-				<CardTitle className="text-sm font-medium text-muted-foreground">
-					Current Time
-				</CardTitle>
+			<CardHeader>
+				<CardTitle className="text-foreground">Current Time</CardTitle>
 			</CardHeader>
-			<CardContent className="pt-0">
+			<CardContent>
 				<div className="text-3xl font-bold text-foreground">
 					{currentTime.toLocaleTimeString("en-US", {
 						hour: "2-digit",

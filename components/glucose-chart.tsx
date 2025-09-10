@@ -16,12 +16,10 @@ import {
 	CartesianGrid,
 	ResponsiveContainer,
 	ReferenceLine,
+	ReferenceArea,
+	LabelList,
+	Tooltip,
 } from "recharts";
-import {
-	ChartContainer,
-	ChartTooltip,
-	ChartTooltipContent,
-} from "@/components/ui/chart";
 
 interface Reading {
 	date: string | Date;
@@ -41,9 +39,9 @@ interface GlucoseChartProps {
 
 const timeRanges = [
 	{ label: "3H", hours: 3 },
+	{ label: "6H", hours: 6 },
 	{ label: "12H", hours: 12 },
 	{ label: "24H", hours: 24 },
-	{ label: "3D", hours: 72 },
 ];
 
 export function GlucoseChart({
@@ -61,21 +59,26 @@ export function GlucoseChart({
 
 		return readings
 			.filter((reading) => new Date(reading.date).getTime() >= rangeStart)
-			.map((reading) => ({
-				timestamp: new Date(reading.date).toISOString(),
-				glucose: reading.value,
-				time: new Date(reading.date).toLocaleTimeString("en-US", {
-					hour: "2-digit",
-					minute: "2-digit",
-					hour12: false,
-				}),
-			}));
+			.map((reading, index, filteredReadings) => {
+				const prevReading = index > 0 ? filteredReadings[index - 1] : null;
+				return {
+					timestamp: new Date(reading.date).toISOString(),
+					glucose: reading.value,
+					time: new Date(reading.date).toLocaleTimeString("en-US", {
+						hour: "2-digit",
+						minute: "2-digit",
+						hour12: false,
+					}),
+					trend: reading.trend,
+					delta: prevReading ? reading.value - prevReading.value : undefined,
+				};
+			});
 	};
 
 	const chartData = readings ? formatChartData(readings) : [];
 
 	return (
-		<Card className="bg-card border-border">
+		<Card className="bg-card border-border h-full flex flex-col">
 			<CardHeader>
 				<div className="flex items-center justify-between">
 					<div>
@@ -97,30 +100,22 @@ export function GlucoseChart({
 					</div>
 				</div>
 			</CardHeader>
-			<CardContent className="p-0 sm:p-6">
+			<CardContent className="p-0 sm:p-6 flex-1 flex flex-col">
 				{loading ? (
-					<div className="h-[400px] flex items-center justify-center text-muted-foreground">
+					<div className="flex-1 flex items-center justify-center text-muted-foreground">
 						Loading chart data...
 					</div>
 				) : error ? (
-					<div className="h-[400px] flex items-center justify-center text-red-500">
+					<div className="flex-1 flex items-center justify-center text-red-500">
 						{error}
 					</div>
 				) : chartData.length > 0 ? (
-					<>
-						<ChartContainer
-							config={{
-								glucose: {
-									label: "Glucose",
-									color: "hsl(var(--chart-1))",
-								},
-							}}
-							className="h-[400px] w-full"
-						>
+					<div className="flex-1 flex flex-col overflow-hidden">
+						<div className="flex-1 w-full min-h-[300px] relative [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border text-xs">
 							<ResponsiveContainer width="100%" height="100%">
 								<LineChart
 									data={chartData}
-									margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+									margin={{ top: 30, right: 10, left: 10, bottom: 10 }}
 								>
 									<CartesianGrid
 										strokeDasharray="3 3"
@@ -128,33 +123,97 @@ export function GlucoseChart({
 									/>
 									<XAxis
 										dataKey="time"
-										stroke="hsl(var(--muted-foreground))"
-										fontSize={12}
+										tick={{ fontSize: 12 }}
 										tickLine={false}
 										axisLine={false}
 									/>
 									<YAxis
 										domain={[60, 250]}
-										stroke="hsl(var(--muted-foreground))"
-										fontSize={12}
+										tick={{ fontSize: 12 }}
 										tickLine={false}
 										axisLine={false}
 									/>
-									<ChartTooltip
-										content={<ChartTooltipContent />}
-										labelFormatter={(value) => `Time: ${value}`}
-										formatter={(value) => [`${value} mg/dL`, "Glucose"]}
+									{/* Reference areas - only for low and high ranges */}
+									<ReferenceArea
+										y1={60}
+										y2={70}
+										fill="#ef4444"
+										fillOpacity={0.3}
 									/>
-									{/* Target range indicators */}
+									<ReferenceArea
+										y1={180}
+										y2={250}
+										fill="#ef4444"
+										fillOpacity={0.3}
+									/>
+									{/* Reference lines */}
 									<ReferenceLine
 										y={70}
-										stroke="hsl(var(--destructive))"
+										stroke="#ef4444"
 										strokeDasharray="5 5"
+										strokeWidth={2}
 									/>
 									<ReferenceLine
 										y={180}
-										stroke="hsl(var(--destructive))"
+										stroke="#ef4444"
 										strokeDasharray="5 5"
+										strokeWidth={2}
+									/>
+									<Tooltip
+										cursor={{
+											stroke: "hsl(var(--muted-foreground))",
+											strokeOpacity: 0.5,
+										}}
+										content={({ active, payload, label }) => {
+											if (!active || !payload || !payload[0]) return null;
+											const data = payload[0].payload;
+											const trendSymbols: Record<string | number, string> = {
+												1: "↑↑", // DoubleUp
+												2: "↑", // SingleUp
+												3: "↗", // FortyFiveUp
+												4: "→", // Flat
+												5: "↘", // FortyFiveDown
+												6: "↓", // SingleDown
+												7: "↓↓", // DoubleDown
+												8: "?", // NotComputable
+												9: "?", // RateOutOfRange
+											};
+											const trend = trendSymbols[data.trend] || "";
+											const delta =
+												data.delta !== undefined
+													? data.delta > 0
+														? `+${data.delta}`
+														: `${data.delta}`
+													: "";
+											return (
+												<div className="rounded-lg border-2 border-border bg-popover p-2 shadow-md">
+													<div className="grid grid-cols-2 gap-2">
+														<span className="text-[0.70rem] uppercase text-muted-foreground">
+															Time
+														</span>
+														<span className="text-[0.70rem] font-medium">
+															{label}
+														</span>
+														<span className="text-[0.70rem] uppercase text-muted-foreground">
+															Glucose
+														</span>
+														<span className="text-[0.70rem] font-medium">
+															{data.glucose} mg/dL {trend}
+														</span>
+														{delta && (
+															<>
+																<span className="text-[0.70rem] uppercase text-muted-foreground">
+																	Change
+																</span>
+																<span className="text-[0.70rem] font-medium">
+																	{delta} mg/dL
+																</span>
+															</>
+														)}
+													</div>
+												</div>
+											);
+										}}
 									/>
 									<Line
 										type="monotone"
@@ -163,23 +222,85 @@ export function GlucoseChart({
 										strokeWidth={2}
 										dot={false}
 										activeDot={{ r: 4, fill: "var(--color-chart-1)" }}
-									/>
+									>
+										<LabelList
+											dataKey="glucose"
+											position="top"
+											offset={20}
+											style={{
+												fontSize: "12px",
+												fill: "hsl(var(--foreground))",
+											}}
+											content={(props) => {
+												// Show labels for every nth point based on range
+												const interval =
+													selectedRange <= 3
+														? 3
+														: selectedRange <= 6
+															? 6
+															: selectedRange <= 12
+																? 12
+																: 24;
+												const { index, x, y, value } = props as {
+													index: number;
+													x: number;
+													y: number;
+													value: number;
+												};
+												if (index % interval === 0) {
+													return (
+														<text
+															x={x}
+															y={y}
+															textAnchor="middle"
+															className="fill-muted-foreground"
+															style={{
+																fontSize: "11px",
+															}}
+														>
+															{value}
+														</text>
+													);
+												}
+												return null;
+											}}
+										/>
+									</Line>
 								</LineChart>
 							</ResponsiveContainer>
-						</ChartContainer>
-						<div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground px-6">
+						</div>
+						<div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-muted-foreground px-6">
 							<div className="flex items-center gap-2">
-								<div className="h-2 w-4 bg-destructive rounded opacity-60"></div>
-								<span>Target Range: 70-180 mg/dL</span>
+								<div className="h-2 w-4 bg-destructive rounded opacity-40"></div>
+								<span>Low/High Range</span>
+							</div>
+							<div className="flex items-center gap-2">
+								<svg
+									width="16"
+									height="8"
+									className="mt-0.5"
+									aria-hidden="true"
+								>
+									<line
+										x1="0"
+										y1="4"
+										x2="16"
+										y2="4"
+										stroke="hsl(var(--destructive))"
+										strokeWidth="2"
+										strokeDasharray="3,2"
+									/>
+								</svg>
+								<span>Target Boundaries: 70 & 180 mg/dL</span>
 							</div>
 							<div className="flex items-center gap-2">
 								<div className="h-2 w-4 bg-chart-1 rounded"></div>
 								<span>Current Glucose Level</span>
 							</div>
 						</div>
-					</>
+					</div>
 				) : (
-					<div className="h-[400px] flex items-center justify-center text-muted-foreground">
+					<div className="flex-1 flex items-center justify-center text-muted-foreground">
 						No data available
 					</div>
 				)}

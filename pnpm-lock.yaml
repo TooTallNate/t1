@@ -23,6 +23,9 @@ importers:
       dexcom-share:
         specifier: 3.4.0
         version: 3.4.0(supports-color@10.2.2)
+      geist:
+        specifier: ^1.5.1
+        version: 1.5.1(next@15.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       lucide-react:
         specifier: ^0.543.0
         version: 0.543.0(react@18.3.1)
@@ -607,6 +610,11 @@ packages:
 
   fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
+
+  geist@1.5.1:
+    resolution: {integrity: sha512-mAHZxIsL2o3ZITFaBVFBnwyDOw+zNLYum6A6nIjpzCGIO8QtC3V76XF2RnZTyLx1wlDTmMDy8jg3Ib52MIjGvQ==}
+    peerDependencies:
+      next: '>=13.2.0'
 
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
@@ -1369,6 +1377,10 @@ snapshots:
   fast-equals@5.2.2: {}
 
   fraction.js@4.3.7: {}
+
+  geist@1.5.1(next@15.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
+    dependencies:
+      next: 15.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   graceful-fs@4.2.11: {}
 
