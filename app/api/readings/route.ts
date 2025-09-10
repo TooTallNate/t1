@@ -5,7 +5,6 @@ import createDexcomIterator, {
 	type Trend,
 } from "dexcom-share";
 import { snakeCase } from "snake-case";
-import { NextRequest, NextResponse } from "next/server";
 
 interface Reading {
 	date: Date;
@@ -86,7 +85,7 @@ function toShell(value: any, prefix = "t1"): string {
 	return str;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
 	try {
 		const url = new URL(request.url);
 		const maxCountParam = url.searchParams.get("maxCount") ?? "";
@@ -137,7 +136,7 @@ export async function GET(request: NextRequest) {
 		return new Response(body, { status, headers });
 	} catch (error) {
 		console.error("Error fetching readings:", error);
-		return NextResponse.json(
+		return Response.json(
 			{ error: "Failed to fetch readings" },
 			{ status: 500 },
 		);

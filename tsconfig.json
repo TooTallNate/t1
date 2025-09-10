@@ -21,15 +21,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "paths": {
-      "@components/*": [
-        "components/*"
-      ],
-      "@lib/*": [
-        "lib/*"
-      ],
-      "@styles/*": [
-        "styles/*"
-      ]
+      "@/*": ["./*"]
     },
     "incremental": true,
     "plugins": [
@@ -39,8 +31,7 @@
     ]
   },
   "exclude": [
-    "node_modules",
-    "api"
+    "node_modules"
   ],
   "include": [
     "next-env.d.ts",

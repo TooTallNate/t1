@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Providers } from "./providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -35,9 +34,7 @@ export default function RootLayout({
 				<meta charSet="utf-8" />
 				<meta httpEquiv="X-UA-Compatible" content="IE=edge" />
 			</head>
-			<body>
-				<Providers>{children}</Providers>
-			</body>
+			<body>{children}</body>
 		</html>
 	);
 }
