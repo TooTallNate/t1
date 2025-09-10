@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowUp, ArrowDown, ArrowRight, Minus } from "lucide-react";
+import { TrendIcon } from "@/components/trend-icon";
 
 interface Reading {
 	date: string | Date;
@@ -27,37 +27,6 @@ export function LatestReadingCard({
 	error,
 	currentTime,
 }: LatestReadingCardProps) {
-	const getTrendIcon = (trend: string | number) => {
-		// Convert numeric trend values from Dexcom API
-		// 1 = DoubleUp, 2 = SingleUp, 3 = FortyFiveUp, 4 = Flat,
-		// 5 = FortyFiveDown, 6 = SingleDown, 7 = DoubleDown
-		const trendValue = typeof trend === "number" ? trend : trend;
-
-		switch (trendValue) {
-			case 1:
-			case "DoubleUp":
-				return <ArrowUp className="h-4 w-4 text-red-600" />;
-			case 2:
-			case "SingleUp":
-			case 3:
-			case "FortyFiveUp":
-				return <ArrowUp className="h-4 w-4 text-red-500" />;
-			case 4:
-			case "Flat":
-				return <ArrowRight className="h-4 w-4 text-muted-foreground" />;
-			case 5:
-			case "FortyFiveDown":
-			case 6:
-			case "SingleDown":
-				return <ArrowDown className="h-4 w-4 text-blue-500" />;
-			case 7:
-			case "DoubleDown":
-				return <ArrowDown className="h-4 w-4 text-blue-600" />;
-			default:
-				return <Minus className="h-4 w-4 text-muted-foreground" />;
-		}
-	};
-
 	const getGlucoseStatus = (glucose: number) => {
 		if (glucose < 70) return { status: "Low", color: "bg-red-500" };
 		if (glucose > 180) return { status: "High", color: "bg-orange-500" };
@@ -92,7 +61,7 @@ export function LatestReadingCard({
 							<span className="text-lg text-muted-foreground">
 								{units || "mg/dL"}
 							</span>
-							{getTrendIcon(latestReading.trend)}
+							<TrendIcon trend={latestReading.trend} />
 							<Badge
 								className={`${getGlucoseStatus(latestReading.value).color} text-white`}
 							>

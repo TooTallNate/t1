@@ -8,6 +8,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { TrendIcon } from "@/components/trend-icon";
 import {
 	LineChart,
 	Line,
@@ -138,26 +139,28 @@ export function GlucoseChart({
 										y1={60}
 										y2={70}
 										fill="#ef4444"
-										fillOpacity={0.3}
+										fillOpacity={0.15}
 									/>
 									<ReferenceArea
 										y1={180}
 										y2={250}
 										fill="#ef4444"
-										fillOpacity={0.3}
+										fillOpacity={0.15}
 									/>
 									{/* Reference lines */}
 									<ReferenceLine
 										y={70}
 										stroke="#ef4444"
+										strokeOpacity={0.4}
 										strokeDasharray="5 5"
-										strokeWidth={2}
+										strokeWidth={1}
 									/>
 									<ReferenceLine
 										y={180}
 										stroke="#ef4444"
+										strokeOpacity={0.4}
 										strokeDasharray="5 5"
-										strokeWidth={2}
+										strokeWidth={1}
 									/>
 									<Tooltip
 										cursor={{
@@ -167,18 +170,6 @@ export function GlucoseChart({
 										content={({ active, payload, label }) => {
 											if (!active || !payload || !payload[0]) return null;
 											const data = payload[0].payload;
-											const trendSymbols: Record<string | number, string> = {
-												1: "↑↑", // DoubleUp
-												2: "↑", // SingleUp
-												3: "↗", // FortyFiveUp
-												4: "→", // Flat
-												5: "↘", // FortyFiveDown
-												6: "↓", // SingleDown
-												7: "↓↓", // DoubleDown
-												8: "?", // NotComputable
-												9: "?", // RateOutOfRange
-											};
-											const trend = trendSymbols[data.trend] || "";
 											const delta =
 												data.delta !== undefined
 													? data.delta > 0
@@ -197,8 +188,12 @@ export function GlucoseChart({
 														<span className="text-[0.70rem] uppercase text-muted-foreground">
 															Glucose
 														</span>
-														<span className="text-[0.70rem] font-medium">
-															{data.glucose} mg/dL {trend}
+														<span className="text-[0.70rem] font-medium flex items-center gap-1">
+															{data.glucose} mg/dL
+															<TrendIcon
+																trend={data.trend}
+																className="h-3 w-3"
+															/>
 														</span>
 														{delta && (
 															<>
