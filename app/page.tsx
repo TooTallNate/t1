@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import { ThemeProvider } from "@/components/theme-provider";
 import { DashboardHeader } from "@/components/dashboard-header";
@@ -33,7 +33,6 @@ const fetcher = async (url: string) => {
 
 export default function GlucoseMonitor() {
 	const [selectedRange, setSelectedRange] = useState(6);
-	const [currentTime, setCurrentTime] = useState(new Date());
 	const [theme, setTheme] = useState<"light" | "dark" | "system">("system");
 
 	// Always fetch 24h of data (288 data points at 5-minute intervals)
@@ -59,14 +58,6 @@ export default function GlucoseMonitor() {
 			revalidateOnReconnect: true,
 		},
 	);
-
-	// Update current time every second
-	useEffect(() => {
-		const timer = setInterval(() => {
-			setCurrentTime(new Date());
-		}, 1000);
-		return () => clearInterval(timer);
-	}, []);
 
 	const toggleTheme = () => {
 		const newTheme =
@@ -94,13 +85,12 @@ export default function GlucoseMonitor() {
 
 					{/* Current Time & Latest Reading */}
 					<div className="grid gap-4 md:grid-cols-2">
-						<TimeDisplay currentTime={currentTime} />
+						<TimeDisplay />
 						<LatestReadingCard
 							latestReading={data?.latestReading}
 							units={data?.units}
 							loading={isLoading}
 							error={error?.message}
-							currentTime={currentTime}
 						/>
 					</div>
 

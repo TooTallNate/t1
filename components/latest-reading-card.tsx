@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendIcon } from "@/components/trend-icon";
@@ -17,7 +18,6 @@ interface LatestReadingCardProps {
 	units?: string;
 	loading: boolean;
 	error?: string | null;
-	currentTime: Date;
 }
 
 export function LatestReadingCard({
@@ -25,20 +25,32 @@ export function LatestReadingCard({
 	units,
 	loading,
 	error,
-	currentTime,
 }: LatestReadingCardProps) {
+	const [minutesAgo, setMinutesAgo] = useState<number | null>(null);
+
+	useEffect(() => {
+		if (!latestReading) return;
+
+		const updateMinutesAgo = () => {
+			const now = Date.now();
+			const readingTime = new Date(latestReading.date).getTime();
+			setMinutesAgo(Math.floor((now - readingTime) / 60000));
+		};
+
+		// Update immediately
+		updateMinutesAgo();
+
+		// Update every minute
+		const interval = setInterval(updateMinutesAgo, 60000);
+
+		return () => clearInterval(interval);
+	}, [latestReading]);
+
 	const getGlucoseStatus = (glucose: number) => {
 		if (glucose < 70) return { status: "Low", color: "bg-red-500" };
 		if (glucose > 180) return { status: "High", color: "bg-orange-500" };
 		return { status: "Normal", color: "bg-green-500" };
 	};
-
-	const minutesAgo = latestReading
-		? Math.floor(
-				(currentTime.getTime() - new Date(latestReading.date).getTime()) /
-					60000,
-			)
-		: 0;
 
 	return (
 		<Card className="bg-card border-border">
@@ -70,9 +82,11 @@ export function LatestReadingCard({
 						</div>
 						<div className="flex items-center gap-2 mt-1">
 							<p className="text-sm text-muted-foreground">
-								{minutesAgo === 0
-									? "Just now"
-									: `${minutesAgo} minute${minutesAgo !== 1 ? "s" : ""} ago`}
+								{minutesAgo === null
+									? "Loading..."
+									: minutesAgo === 0
+										? "Just now"
+										: `${minutesAgo} minute${minutesAgo !== 1 ? "s" : ""} ago`}
 							</p>
 							{latestReading.delta !== undefined && (
 								<span
