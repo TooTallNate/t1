@@ -7,15 +7,26 @@ export function TimeDisplay() {
 	const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
 	useEffect(() => {
-		// Set initial time
-		setCurrentTime(new Date());
+		let timeoutId: NodeJS.Timeout;
 
-		// Update time every second
-		const timer = setInterval(() => {
-			setCurrentTime(new Date());
-		}, 1000);
+		const tick = () => {
+			// Update the time
+			const now = new Date();
+			setCurrentTime(now);
 
-		return () => clearInterval(timer);
+			// Calculate milliseconds until next second boundary
+			const msUntilNextSecond = 1000 - now.getMilliseconds();
+
+			// Schedule next tick
+			timeoutId = setTimeout(tick, msUntilNextSecond);
+		};
+
+		// Start ticking immediately
+		tick();
+
+		return () => {
+			clearTimeout(timeoutId);
+		};
 	}, []);
 
 	return (
