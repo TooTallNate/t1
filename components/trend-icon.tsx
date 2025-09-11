@@ -1,10 +1,10 @@
 import {
-	ArrowUp,
 	ArrowDown,
 	ArrowRight,
-	TrendingUp,
-	TrendingDown,
+	ArrowUp,
 	Minus,
+	TrendingDown,
+	TrendingUp,
 } from "lucide-react";
 
 interface TrendIconProps {

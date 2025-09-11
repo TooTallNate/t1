@@ -1,20 +1,7 @@
-import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
 import "./globals.css";
-
-export const metadata: Metadata = {
-	description: "Description",
-	keywords: "Keywords",
-	manifest: "/manifest.json",
-	icons: {
-		icon: [
-			{ url: "/icons/icon-16x16.png", sizes: "16x16", type: "image/png" },
-			{ url: "/icons/icon-32x32.png", sizes: "32x32", type: "image/png" },
-		],
-		apple: "/apple-icon.png",
-	},
-};
+import { GeistMono } from "geist/font/mono";
+import type { Viewport } from "next";
 
 export const viewport: Viewport = {
 	themeColor: "#317EFB",
@@ -35,6 +22,7 @@ export default function RootLayout({
 			<head>
 				<meta charSet="utf-8" />
 				<meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+				<link rel="icon" href="/favicon.ico?bgl=100&delta=0&trend=Flat&dark" />
 			</head>
 			<body className={GeistSans.className}>{children}</body>
 		</html>
