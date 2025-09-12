@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { Trend } from "dexcom-share";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { ThemeProvider } from "@/components/theme-provider";
 import { DashboardHeader } from "@/components/dashboard-header";
-import { TimeDisplay } from "@/components/time-display";
-import { LatestReadingCard } from "@/components/latest-reading-card";
 import { GlucoseChart } from "@/components/glucose-chart";
+import { LatestReadingCard } from "@/components/latest-reading-card";
+import { ThemeProvider } from "@/components/theme-provider";
+import { TimeDisplay } from "@/components/time-display";
+import { useFavicon } from "@/hooks/use-favicon";
 
 interface Reading {
 	date: string | Date;
-	trend: string | number;
+	trend: number;
 	value: number;
 	delta?: number;
 	delay?: number;
@@ -34,6 +36,7 @@ const fetcher = async (url: string) => {
 export default function GlucoseMonitor() {
 	const [selectedRange, setSelectedRange] = useState(6);
 	const [theme, setTheme] = useState<"light" | "dark" | "system">("system");
+	const { setFavicon } = useFavicon();
 
 	// Always fetch 24h of data (288 data points at 5-minute intervals)
 	const maxCount = 288;
@@ -58,6 +61,49 @@ export default function GlucoseMonitor() {
 			revalidateOnReconnect: true,
 		},
 	);
+
+	// Update favicon when glucose data changes
+	useEffect(() => {
+		if (data?.latestReading) {
+			const { value, delta, trend } = data.latestReading;
+
+			// Determine if dark mode is active
+			const isDark =
+				theme === "dark" ||
+				(theme === "system" &&
+					window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+			setFavicon({
+				bgl: value,
+				delta: delta || 0,
+				trend: Trend[trend],
+				dark: isDark,
+			});
+		}
+	}, [data?.latestReading, theme, setFavicon]);
+
+	// Listen for system theme changes when in "system" mode
+	useEffect(() => {
+		if (theme !== "system" || !data?.latestReading) return;
+
+		const updateFaviconForSystemTheme = (e: MediaQueryListEvent) => {
+			const { value, delta, trend } = data.latestReading;
+
+			setFavicon({
+				bgl: value,
+				delta: delta || 0,
+				trend: Trend[trend],
+				dark: e.matches,
+			});
+		};
+
+		const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+		mediaQuery.addEventListener("change", updateFaviconForSystemTheme);
+
+		return () => {
+			mediaQuery.removeEventListener("change", updateFaviconForSystemTheme);
+		};
+	}, [theme, data?.latestReading, setFavicon]);
 
 	const toggleTheme = () => {
 		const newTheme =

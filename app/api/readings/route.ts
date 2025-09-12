@@ -1,9 +1,9 @@
-import ms from "ms";
 import { types } from "node:util";
 import createDexcomIterator, {
 	type Reading as DexcomReading,
 	type Trend,
 } from "dexcom-share";
+import ms from "ms";
 import { snakeCase } from "snake-case";
 
 interface Reading {
@@ -60,9 +60,9 @@ function toReading(
 	};
 }
 
-function toShell(value: any, prefix = "t1"): string {
+function toShell(value: unknown, prefix = "t1"): string {
 	let str = "";
-	if (typeof value === "undefined") {
+	if (typeof value === "undefined" || value === null) {
 		return str;
 	}
 	if (typeof value === "string" || typeof value === "number") {
@@ -74,7 +74,11 @@ function toShell(value: any, prefix = "t1"): string {
 		for (let i = 0; i < value.length; i++) {
 			str += toShell(value[i], `${prefix}_${i}`);
 		}
-	} else if (typeof value.toShell === "function") {
+	} else if (
+		typeof value === "object" &&
+		"toShell" in value &&
+		typeof value.toShell === "function"
+	) {
 		str += `${prefix}=${value.toShell()}\n`;
 	} else {
 		// Assume "object"

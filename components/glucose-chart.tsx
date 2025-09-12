@@ -1,26 +1,26 @@
 "use client";
 
 import {
+	CartesianGrid,
+	LabelList,
+	Line,
+	LineChart,
+	ReferenceArea,
+	ReferenceLine,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts";
+import { TrendIcon } from "@/components/trend-icon";
+import { Button } from "@/components/ui/button";
+import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { TrendIcon } from "@/components/trend-icon";
-import {
-	LineChart,
-	Line,
-	XAxis,
-	YAxis,
-	CartesianGrid,
-	ResponsiveContainer,
-	ReferenceLine,
-	ReferenceArea,
-	LabelList,
-	Tooltip,
-} from "recharts";
 
 interface Reading {
 	date: string | Date;
