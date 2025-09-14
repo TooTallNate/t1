@@ -1,7 +1,6 @@
 "use client";
 
 import {
-	CartesianGrid,
 	LabelList,
 	Line,
 	LineChart,
@@ -116,12 +115,8 @@ export function GlucoseChart({
 							<ResponsiveContainer width="100%" height="100%">
 								<LineChart
 									data={chartData}
-									margin={{ top: 30, right: 10, left: 10, bottom: 10 }}
+									margin={{ top: 0, right: 0, left: 20, bottom: 10 }}
 								>
-									<CartesianGrid
-										strokeDasharray="3 3"
-										stroke="hsl(var(--border))"
-									/>
 									<XAxis
 										dataKey="time"
 										tick={{ fontSize: 12 }}
@@ -133,6 +128,7 @@ export function GlucoseChart({
 										tick={{ fontSize: 12 }}
 										tickLine={false}
 										axisLine={false}
+										orientation="right"
 									/>
 									{/* Reference areas - only for low and high ranges */}
 									<ReferenceArea
@@ -144,7 +140,7 @@ export function GlucoseChart({
 									<ReferenceArea
 										y1={180}
 										y2={250}
-										fill="#ef4444"
+										fill="#eab308"
 										fillOpacity={0.15}
 									/>
 									{/* Reference lines */}
@@ -157,7 +153,7 @@ export function GlucoseChart({
 									/>
 									<ReferenceLine
 										y={180}
-										stroke="#ef4444"
+										stroke="#eab308"
 										strokeOpacity={0.4}
 										strokeDasharray="5 5"
 										strokeWidth={1}
