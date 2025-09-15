@@ -59,6 +59,8 @@ export default function GlucoseMonitor() {
 			},
 			revalidateOnFocus: true,
 			revalidateOnReconnect: true,
+			refreshWhenHidden: true,
+			refreshWhenOffline: true,
 		},
 	);
 
