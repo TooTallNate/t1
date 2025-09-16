@@ -22,7 +22,7 @@ export default function RootLayout({
 			<head>
 				<meta charSet="utf-8" />
 				<meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-				<link rel="icon" href="/favicon.ico?bgl=100&delta=0&trend=Flat&dark" />
+				<link rel="icon" href="/favicon.ico?dark" />
 			</head>
 			<body className={GeistSans.className}>{children}</body>
 		</html>

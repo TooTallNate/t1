@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { Trend } from "dexcom-share";
-import satori from "satori";
+import { Syringe } from "lucide-react";
+import satori, { type SatoriOptions } from "satori";
 import { TrendIcon } from "@/components/trend-icon";
 import { getDelta } from "@/lib/delta";
 
@@ -13,6 +14,29 @@ const geistFont = readFileSync(geistFontPath);
 
 export async function GET(req: Request) {
 	const { searchParams } = new URL(req.url);
+
+	const satoriOptions: SatoriOptions = {
+		width: 32,
+		height: 32,
+		fonts: [{ name: "Geist", data: geistFont, weight: 400, style: "normal" }],
+	};
+
+	if (searchParams.size === 0) {
+		const svg = await satori(
+			<Syringe
+				width={32}
+				height={32}
+				stroke="white"
+				filter="drop-shadow(0 0 2px rgba(0, 0, 0, 1))"
+			/>,
+			satoriOptions,
+		);
+		return new Response(svg, {
+			headers: {
+				"Content-Type": "image/svg+xml",
+			},
+		});
+	}
 
 	const bgl = parseInt(searchParams.get("bgl") ?? "0", 10);
 	if (Number.isNaN(bgl) || bgl < 0 || bgl > 1000) {
@@ -36,9 +60,7 @@ export async function GET(req: Request) {
 
 	const isDarkMode = searchParams.has("dark");
 	const color = isDarkMode ? "white" : "black";
-	const textShadow = isDarkMode
-		? "0 0 1px rgba(0, 0, 0, 1)"
-		: "0 0 1px rgba(255, 255, 255, 1)";
+	const textShadow = isDarkMode ? "0 0 2px black" : "0 0 2px white";
 
 	const svg = await satori(
 		<div
@@ -74,30 +96,18 @@ export async function GET(req: Request) {
 						width={12}
 						height={12}
 						stroke={color}
-						style={{ textShadow }}
+						style={{ filter: `drop-shadow(${textShadow})` }}
 					/>
 				</span>
 				<span>{deltaStr}</span>
 			</div>
 		</div>,
-		{
-			width: 32,
-			height: 32,
-			fonts: [
-				{
-					name: "Geist",
-					data: geistFont,
-					weight: 400,
-					style: "normal",
-				},
-			],
-		},
+		satoriOptions,
 	);
 
 	return new Response(svg, {
 		headers: {
 			"Content-Type": "image/svg+xml",
-			"Cache-Control": "public, max-age=31536000, immutable",
 		},
 	});
 }
