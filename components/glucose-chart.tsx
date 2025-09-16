@@ -1,5 +1,6 @@
 "use client";
 
+import type { Trend } from "dexcom-share";
 import {
 	LabelList,
 	Line,
@@ -20,10 +21,11 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { getDelta } from "@/lib/delta";
 
 interface Reading {
 	date: string | Date;
-	trend: string | number;
+	trend: Trend;
 	value: number;
 	delta?: number;
 	delay?: number;
@@ -166,12 +168,7 @@ export function GlucoseChart({
 										content={({ active, payload, label }) => {
 											if (!active || !payload || !payload[0]) return null;
 											const data = payload[0].payload;
-											const delta =
-												data.delta !== undefined
-													? data.delta > 0
-														? `+${data.delta}`
-														: `${data.delta}`
-													: "";
+											const delta = getDelta(data.delta);
 											return (
 												<div className="rounded-lg border-2 border-border bg-popover p-2 shadow-md">
 													<div className="grid grid-cols-2 gap-2">

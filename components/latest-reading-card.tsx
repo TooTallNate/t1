@@ -1,13 +1,15 @@
 "use client";
 
+import type { Trend } from "dexcom-share";
 import { useEffect, useState } from "react";
 import { TrendIcon } from "@/components/trend-icon";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDelta } from "@/lib/delta";
 
 interface Reading {
 	date: string | Date;
-	trend: string | number;
+	trend: Trend;
 	value: number;
 	delta?: number;
 	delay?: number;
@@ -98,8 +100,7 @@ export function LatestReadingCard({
 												: "text-muted-foreground"
 									}`}
 								>
-									{latestReading.delta > 0 ? "+" : ""}
-									{latestReading.delta} mg/dL
+									{getDelta(latestReading.delta)} mg/dL
 								</span>
 							)}
 						</div>

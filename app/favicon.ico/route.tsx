@@ -1,49 +1,15 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { Trend } from "dexcom-share";
 import satori from "satori";
+import { TrendIcon } from "@/components/trend-icon";
+import { getDelta } from "@/lib/delta";
 
 const geistFontPath = join(
 	process.cwd(),
 	"node_modules/geist/dist/fonts/geist-mono/GeistMono-SemiBold.ttf",
 );
 const geistFont = readFileSync(geistFontPath);
-
-const getTrendUnicode = (trend: string) => {
-	switch (trend) {
-		case "DoubleUp": // Geist Mono doesn't support ⇈
-			return (
-				<>
-					<span>↑</span>
-					<span style={{ position: "absolute", left: 3 }}>↑</span>
-				</>
-			);
-		case "SingleUp":
-			return "↑";
-		case "FortyFiveUp":
-			return "↗";
-		case "Flat":
-			return "→";
-		case "FortyFiveDown":
-			return "↘";
-		case "SingleDown":
-			return "↓";
-		case "DoubleDown": // Geist Mono doesn't support ⇊
-			return (
-				<>
-					<span>↓</span>
-					<span style={{ position: "absolute", left: 3 }}>↓</span>
-				</>
-			);
-		case "None":
-			return "⇼";
-		case "OutOfRange":
-			return "✖︎";
-		case "NotComputable":
-			return "↛";
-		default:
-			return null;
-	}
-};
 
 export async function GET(req: Request) {
 	const { searchParams } = new URL(req.url);
@@ -57,14 +23,14 @@ export async function GET(req: Request) {
 	if (Number.isNaN(delta) || delta < -1000 || delta > 1000) {
 		return new Response("Invalid delta", { status: 400 });
 	}
+	const deltaStr = getDelta(delta);
 
 	const trend = searchParams.get("trend");
 	if (!trend) {
 		return new Response("Invalid trend", { status: 400 });
 	}
-
-	const trendUnicode = getTrendUnicode(trend);
-	if (!trendUnicode) {
+	const trendValue = Trend[trend as keyof typeof Trend];
+	if (typeof trendValue !== "number") {
 		return new Response("Invalid trend", { status: 400 });
 	}
 
@@ -99,13 +65,19 @@ export async function GET(req: Request) {
 					alignItems: "center",
 					justifyContent: "center",
 					fontSize: 12,
-					gap: 2,
+					gap: deltaStr.length > 2 ? 0 : 4,
 				}}
 			>
-				<span>{trendUnicode}</span>
 				<span>
-					{delta === 0 ? `±${delta}` : delta > 0 ? `+${delta}` : delta}
+					<TrendIcon
+						trend={trendValue}
+						width={12}
+						height={12}
+						stroke={color}
+						style={{ textShadow }}
+					/>
 				</span>
+				<span>{deltaStr}</span>
 			</div>
 		</div>,
 		{
