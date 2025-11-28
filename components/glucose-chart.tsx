@@ -241,9 +241,12 @@ export function GlucoseChart({
 															x={x}
 															y={y}
 															textAnchor="middle"
-															className="fill-muted-foreground"
+															className="fill-black stroke-white/50 dark:fill-white dark:stroke-black/50"
 															style={{
 																fontSize: "11px",
+																fontWeight: 600,
+																strokeWidth: 2,
+																paintOrder: "stroke",
 															}}
 														>
 															{value}
