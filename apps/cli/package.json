@@ -1,0 +1,30 @@
+{
+  "name": "@t1/cli",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "CLI for t1 blood glucose monitoring",
+  "bin": {
+    "t1": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "tsx src/index.tsx",
+    "build": "tsup src/index.tsx --format esm --dts",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@pppp606/ink-chart": "^0.2.4",
+    "dexcom-share": "3.4.0",
+    "ink": "^6.6.0",
+    "ink-big-text": "^2.0.0",
+    "ms": "^2.1.3",
+    "react": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/ms": "^0.7.34",
+    "@types/node": "^20.19.13",
+    "@types/react": "^19.2.11",
+    "tsup": "^8.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.9.2"
+  }
+}
