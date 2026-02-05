@@ -4,11 +4,18 @@ import { fetchReadings, getRefreshDelay } from "../dexcom.js";
 import type { ReadingsData } from "../types.js";
 import { GlucoseChart } from "./GlucoseChart.js";
 import { LatestReading } from "./LatestReading.js";
-import { TimeRangeSelector, TIME_RANGES } from "./TimeRangeSelector.js";
+import { TIME_RANGES } from "./TimeRangeSelector.js";
+
+// Fixed heights for layout calculation
+// App padding: 2, Header: 2, LatestReading: 5, margins: 2
+// Chart border: 2, chart header: 2, x-axis: 2, stats: 2, legend: 1
+// Footer: 2
+const FIXED_HEIGHT = 22;
 
 export function App() {
 	const { exit } = useApp();
 	const { stdout } = useStdout();
+	const [terminalHeight, setTerminalHeight] = useState(stdout?.rows ?? 24);
 	const [data, setData] = useState<ReadingsData | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -18,9 +25,22 @@ export function App() {
 
 	const selectedRange = TIME_RANGES[selectedRangeIndex];
 
-	// Calculate chart width from terminal
-	const terminalWidth = stdout?.columns ?? 80;
-	const chartWidth = Math.max(20, terminalWidth - 8);
+	// Listen for terminal resize events
+	useEffect(() => {
+		if (!stdout) return;
+
+		const handleResize = () => {
+			setTerminalHeight(stdout.rows);
+		};
+
+		stdout.on("resize", handleResize);
+		return () => {
+			stdout.off("resize", handleResize);
+		};
+	}, [stdout]);
+
+	// Calculate chart height based on available terminal height
+	const chartHeight = Math.max(5, terminalHeight - FIXED_HEIGHT);
 
 	// Calculate readings needed for selected time range
 	// Each reading is 5 minutes apart
@@ -78,15 +98,12 @@ export function App() {
 	});
 
 	return (
-		<Box flexDirection="column" padding={1}>
+		<Box flexDirection="column" padding={1} height={terminalHeight}>
 			{/* Header */}
-			<Box marginBottom={1} justifyContent="space-between">
+			<Box marginBottom={1}>
 				<Text bold color="cyan">
 					t1 - Blood Glucose Monitor
 				</Text>
-				<TimeRangeSelector
-					selectedIndex={selectedRangeIndex}
-				/>
 			</Box>
 
 			{/* Latest Reading */}
@@ -97,12 +114,12 @@ export function App() {
 				error={error}
 			/>
 
-			{/* Chart */}
-			<Box marginTop={1}>
+			{/* Chart - grows to fill available space */}
+			<Box marginTop={1} flexGrow={1}>
 				<GlucoseChart
 					readings={data?.readings ?? []}
-					chartWidth={chartWidth}
-					height={12}
+					selectedRangeIndex={selectedRangeIndex}
+					height={chartHeight}
 					loading={loading && !data}
 					error={error}
 				/>
