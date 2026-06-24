@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/TooTallNate/t1#readme",
   "devDependencies": {
-    "turbo": "^2.0.0"
+    "turbo": "^2.9.14"
   },
   "packageManager": "pnpm@10.15.1",
   "pnpm": {
